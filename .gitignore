@@ -27,3 +27,5 @@ hs_err_pid*
 .idea
 .gradle
 build
+
+it.units.muli.poker.iml
