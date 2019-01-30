@@ -23,7 +23,6 @@ Hand <|-- Player
 Card <|-- Hand
 Player <|-- Game
 
-
 enum CardSuits {
 CLUBS = 1
 SPADES = 2
