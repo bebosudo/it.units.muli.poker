@@ -5,11 +5,11 @@ public class Card {
     private CardSuit suit;
 
     public Card(String card) {
-        char cRank = card.charAt(0);
-        char cSuit= card.charAt(1);
+        char rankChar = card.charAt(0);
+        char suitChar = card.charAt(1);
 
         // TODO: add exceptions in defaults?
-        switch (cRank) {
+        switch (rankChar) {
             case 'A':
             case 'a':
                 rank = CardRank.ACE;
@@ -56,7 +56,7 @@ public class Card {
                 break;
         }
 
-        switch (cSuit) {
+        switch (suitChar) {
             case 'S':
             case 's':
                 suit = CardSuit.SPADES;

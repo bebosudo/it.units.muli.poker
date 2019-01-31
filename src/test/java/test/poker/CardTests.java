@@ -54,17 +54,24 @@ public class CardTests {
     }
 
     @Test
-    public void parseKingOfClubs() {
-        Card c = new Card("Kc");
-        assertThat(c.getRank(), is(equalTo(CardRank.KING)));
-        assertThat(c.getSuit(), is(equalTo(CardSuit.CLUBS)));
-    }
+    public void parseAllAvailableCards() {
+        String[] suitsStr = {"s", "c", "h", "d"};
+        CardSuit[] suitsClass = {CardSuit.SPADES, CardSuit.CLUBS, CardSuit.HEARTS, CardSuit.DIAMONDS};
 
-    @Test
-    public void parseQueenOfHearts() {
-        Card c = new Card("Qh");
-        assertThat(c.getRank(), is(equalTo(CardRank.QUEEN)));
-        assertThat(c.getSuit(), is(equalTo(CardSuit.HEARTS)));
-    }
+        String[] ranksStr = {"a", "2", "3", "4", "5", "6", "7", "8", "9", "t", "j", "q"};
+        CardRank[] ranksClass = {CardRank.ACE, CardRank.TWO, CardRank.THREE, CardRank.FOUR,
+                CardRank.FIVE, CardRank.SIX, CardRank.SEVEN, CardRank.EIGHT, CardRank.NINE,
+                CardRank.TEN, CardRank.JACK, CardRank.QUEEN, CardRank.KING};
 
+
+        for (int rankId = 0; rankId < ranksStr.length; rankId++) {
+            for (int suitId = 0; suitId < suitsStr.length; suitId++) {
+
+                Card c = new Card(ranksStr[rankId] + suitsStr[suitId]);
+
+                assertThat(c.getRank(), is(equalTo(ranksClass[rankId])));
+                assertThat(c.getSuit(), is(equalTo(suitsClass[suitId])));
+            }
+        }
+    }
 }
