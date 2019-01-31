@@ -5,8 +5,75 @@ public class Card {
     private CardSuit suit;
 
     public Card(String card) {
-        rank = CardRank.ACE;
-        suit = CardSuit.SPADES;
+        char cRank = card.charAt(0);
+        char cSuit= card.charAt(1);
+
+        // TODO: add exceptions in defaults?
+        switch (cRank) {
+            case 'A':
+            case 'a':
+                rank = CardRank.ACE;
+                break;
+            case '2':
+                rank = CardRank.TWO;
+                break;
+            case '3':
+                rank = CardRank.THREE;
+                break;
+            case '4':
+                rank = CardRank.FOUR;
+                break;
+            case '5':
+                rank = CardRank.FIVE;
+                break;
+            case '6':
+                rank = CardRank.SIX;
+                break;
+            case '7':
+                rank = CardRank.SEVEN;
+                break;
+            case '8':
+                rank = CardRank.EIGHT;
+                break;
+            case '9':
+                rank = CardRank.NINE;
+                break;
+            case 'T':
+            case 't':
+                rank = CardRank.TEN;
+                break;
+            case 'J':
+            case 'j':
+                rank = CardRank.JACK;
+                break;
+            case 'Q':
+            case 'q':
+                rank = CardRank.QUEEN;
+                break;
+            case 'K':
+            case 'k':
+                rank = CardRank.KING;
+                break;
+        }
+
+        switch (cSuit) {
+            case 'S':
+            case 's':
+                suit = CardSuit.SPADES;
+                break;
+            case 'C':
+            case 'c':
+                suit = CardSuit.CLUBS;
+                break;
+            case 'H':
+            case 'h':
+                suit = CardSuit.HEARTS;
+                break;
+            case 'D':
+            case 'd':
+                suit = CardSuit.DIAMONDS;
+                break;
+        }
     }
 
     public CardRank getRank() {

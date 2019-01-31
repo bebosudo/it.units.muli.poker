@@ -18,4 +18,53 @@ public class CardTests {
         assertThat(c.getSuit(), is(equalTo(CardSuit.SPADES)));
     }
 
+    @Test
+    public void parseTwoOfSpades() {
+        Card c = new Card("2s");
+        assertThat(c.getRank(), is(equalTo(CardRank.TWO)));
+        assertThat(c.getSuit(), is(equalTo(CardSuit.SPADES)));
+    }
+
+    @Test
+    public void parseTenOfDiamonds() {
+        Card c = new Card("Td");
+        assertThat(c.getRank(), is(equalTo(CardRank.TEN)));
+        assertThat(c.getSuit(), is(equalTo(CardSuit.DIAMONDS)));
+    }
+
+    @Test
+    public void parseTenOfDiamondsInvertedUppercase() {
+        Card c = new Card("tD");
+        assertThat(c.getRank(), is(equalTo(CardRank.TEN)));
+        assertThat(c.getSuit(), is(equalTo(CardSuit.DIAMONDS)));
+    }
+
+    @Test
+    public void parseTenOfDiamondsAllLower() {
+        Card c = new Card("td");
+        assertThat(c.getRank(), is(equalTo(CardRank.TEN)));
+        assertThat(c.getSuit(), is(equalTo(CardSuit.DIAMONDS)));
+    }
+
+    @Test
+    public void parseTenOfDiamondsAllUpper() {
+        Card c = new Card("TD");
+        assertThat(c.getRank(), is(equalTo(CardRank.TEN)));
+        assertThat(c.getSuit(), is(equalTo(CardSuit.DIAMONDS)));
+    }
+
+    @Test
+    public void parseKingOfClubs() {
+        Card c = new Card("Kc");
+        assertThat(c.getRank(), is(equalTo(CardRank.KING)));
+        assertThat(c.getSuit(), is(equalTo(CardSuit.CLUBS)));
+    }
+
+    @Test
+    public void parseQueenOfHearts() {
+        Card c = new Card("Qh");
+        assertThat(c.getRank(), is(equalTo(CardRank.QUEEN)));
+        assertThat(c.getSuit(), is(equalTo(CardSuit.HEARTS)));
+    }
+
 }
