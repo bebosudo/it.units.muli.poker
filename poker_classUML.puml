@@ -2,8 +2,9 @@
 
 class Card {
 int rank
-char suit
-size()
+int suit
+getRank()
+getSuit()
 }
 
 class Hand {
@@ -20,9 +21,7 @@ class Game {
 
 Hand <|-- Player
 Card <|-- Hand
-Game <|-- Hand
-Game <|-- Player
-
+Player <|-- Game
 
 enum CardSuits {
 CLUBS = 1
