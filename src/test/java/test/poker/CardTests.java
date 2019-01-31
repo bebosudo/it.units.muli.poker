@@ -63,7 +63,6 @@ public class CardTests {
                 CardRank.FIVE, CardRank.SIX, CardRank.SEVEN, CardRank.EIGHT, CardRank.NINE,
                 CardRank.TEN, CardRank.JACK, CardRank.QUEEN, CardRank.KING};
 
-
         for (int rankId = 0; rankId < ranksStr.length; rankId++) {
             for (int suitId = 0; suitId < suitsStr.length; suitId++) {
 
