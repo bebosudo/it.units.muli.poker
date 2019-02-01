@@ -1,6 +1,8 @@
 package poker.kata;
 
-public class Card {
+import java.util.Comparator;
+
+public class Card{
     private CardRank rank;
     private CardSuit suit;
 
@@ -83,5 +85,20 @@ public class Card {
     public CardSuit getSuit() {
         return suit;
     }
+
+
+    public static Comparator<Card> COMPARE_BY_RANK = new Comparator<Card>() {
+        @Override
+        public int compare(Card o1, Card o2) {
+            return o1.rank.compareTo(o2.rank);
+        }
+    };
+
+    public static Comparator<Card> COMPARE_BY_SUIT = new Comparator<Card>() {
+        @Override
+        public int compare(Card o1, Card o2) {
+            return o1.suit.compareTo(o2.suit);
+        }
+    };
 }
 

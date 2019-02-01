@@ -1,7 +1,7 @@
 package poker.kata;
 
 public enum CardHands {
-    NOTHING(1), HIGH_CARD(2), ONE_PAIR(3), TWO_PAIR(4), SET(5), STRAIGHT(6), FLUSH(7), FULL(8), QUADS(9);
+    HIGH_CARD(1), ONE_PAIR(2), TWO_PAIR(3), SET(4), STRAIGHT(5), FLUSH(6), FULL(7), QUADS(8), STRAIGHT_FLUSH(9);
 
     private final int value;
 
