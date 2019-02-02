@@ -170,7 +170,7 @@ public class HandTest {
 //        assertThat(h.getScore(), is(equalTo(Rank.STRAIGHT_FLUSH)));
 //    }
 
-    /*
+
     @Test
     public void TestFlushSpades(){
         Hand h = new Hand("Ks As 2s Ts Js 3c Qh");
@@ -194,5 +194,5 @@ public class HandTest {
         Hand h = new Hand("9c 6c 7c 3c Kh 3s 5c");
         assertThat(h.getScore(), is(equalTo(Rank.FLUSH)));
     }
-    */
+
 }
