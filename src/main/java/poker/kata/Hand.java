@@ -17,7 +17,6 @@ public class Hand{
 
         original = HandStr;
         cards = new ArrayList<Card>();
-        score = CardHands.HIGH_CARD;
 
         String reg = "([TtJjQqKkAa\\d][cdshCSDH])";
         Pattern pat = Pattern.compile(reg);
@@ -29,6 +28,7 @@ public class Hand{
             i++;
         }
 
+        setScore();
     }
 
     public Card getCards(int i) { return cards.get(i); }
@@ -74,7 +74,7 @@ public class Hand{
     }
 
 
-    public void setScore(){
+    private void setScore(){
         if( this.isFlush() && this.isStraight() ) {
             score = CardHands.STRAIGHT_FLUSH;
             return;
