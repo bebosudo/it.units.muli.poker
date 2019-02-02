@@ -136,4 +136,38 @@ public class HandTest {
         Hand h = new Hand("Kd Ac Ad Td Jd Ah Qc");
         assertThat(h.getScore(), is(equalTo(CardHands.STRAIGHT)));
     }
+
+
+
+    @Test
+    public void TestQuad(){
+        Hand h = new Hand("Ad As 3s Td 4d Ah Ac");
+        assertThat(h.getScore(), is(equalTo(CardHands.FOUR_OF_A_KIND)));
+
+        h = new Hand("5d 7h 5c 5h Td Th 5s");
+        assertThat(h.getScore(), is(equalTo(CardHands.FOUR_OF_A_KIND)));
+
+        h = new Hand("Td 3h Ts 7s 4d Th Tc");
+        assertThat(h.getScore(), is(equalTo(CardHands.FOUR_OF_A_KIND)));
+
+        h = new Hand("3h 3d 6c 7c 3c Kh 3s");
+        assertThat(h.getScore(), is(equalTo(CardHands.FOUR_OF_A_KIND)));
+
+    }
+
+
+    @Test
+    public void TestStraightFlush(){
+        Hand h = new Hand("Ad Kd Td 3h Jd 2h Qd");
+        assertThat(h.getScore(), is(equalTo(CardHands.STRAIGHT_FLUSH)));
+
+        h = new Hand("Ah Th 3h 4h 7d 2h 5h");
+        assertThat(h.getScore(), is(equalTo(CardHands.STRAIGHT_FLUSH)));
+
+        h = new Hand("Qs Js 3d Ts 9s 2h 8s");
+        assertThat(h.getScore(), is(equalTo(CardHands.STRAIGHT_FLUSH)));
+
+        h = new Hand("9c Td 8c 5c 3h 6c 7c");
+        assertThat(h.getScore(), is(equalTo(CardHands.STRAIGHT_FLUSH)));
+    }
 }
