@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 
 public class Hand {
@@ -164,7 +165,16 @@ public class Hand {
         Collections.sort(cards, Card.COMPARE_BY_SUIT);
     }
 
-    private void searchForGroupOfCardsAndPop(ArrayList<Card> arrayFrom, ArrayList<Card> arrayTo, int groupLength) {
+    public boolean compareToCardsArray(Card[] other){
+        if(other.length != size()) {
+            throw new ArrayIndexOutOfBoundsException("The two hands do not share the same size!");
+        }else{
+            return IntStream.range(0, other.length).mapToLong(i -> other[i].getFace()
+                    .compareTo(getCard(i).getFace())).allMatch(x -> x == 0);
+        }
+    }
+
+    private void searchForGroupOfCardsThenPop(ArrayList<Card> arrayFrom, ArrayList<Card> arrayTo, int groupLength) {
         //search into arrayFrom if it can find a given group of cards, then it pops the group from arrayFrom
         //and pushes it into arrayTo
         for (int i = 0; i < arrayFrom.size() - groupLength + 1; i++) {
@@ -198,13 +208,13 @@ public class Hand {
         //This arraylist will store new cards ordered by (groupLarger + groupSmaller + everything else)
         ArrayList<Card> orderedCards = new ArrayList();
 
-        searchForGroupOfCardsAndPop(cards, orderedCards, groupLarger);
+        searchForGroupOfCardsThenPop(cards, orderedCards, groupLarger);
 
         //if the new arraylist has the size of the group, it means it has found the desided group, then proceeds
         //on to the next group
         if (orderedCards.size() == groupLarger) {
             if (groupSmaller > 0) {
-                searchForGroupOfCardsAndPop(cards, orderedCards, groupSmaller);
+                searchForGroupOfCardsThenPop(cards, orderedCards, groupSmaller);
                 if (orderedCards.size() == groupLarger + groupSmaller) {
                     return switchCardArraysAndReturnTrue(orderedCards);
 

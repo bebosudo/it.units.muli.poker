@@ -7,6 +7,10 @@ import poker.kata.Hand;
 import poker.kata.Card;
 
 
+import java.util.ArrayList;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -200,22 +204,39 @@ public class HandTest {
     public void TestStraightOrdering(){
         Hand h = new Hand("9c 6c 7c 4s Kh 3s 5d");
         Card[] orderedCards = {new Card("7c"), new Card("6c"), new Card("5d"), new Card("4s"), new Card("3s"), new Card("Kh"), new Card("9c")};
-        assertThat(h.getCards().toArray(),is(equalTo(orderedCards)));
+
+        assertThat(h.getCards(), is(equalTo(orderedCards)));
     }
 
     @Test
     public void TestPairOrdering(){
         Hand h = new Hand("9c 6c 7c 4s Kh 3s 7d");
         Card[] orderedCards = {new Card("7c"), new Card("7d"), new Card("Kh"), new Card("9c"), new Card("6c"), new Card("4s"), new Card("3s")};
-        assertThat(h.getCards().toArray(),is(equalTo(orderedCards)));
+
+        assertThat(h.compareToCardsArray(orderedCards), is(true));
     }
 
     @Test
     public void TestDoubleOrdering(){
         Hand h = new Hand("3c 6c 7c 4s Kh 3s 7d");
         Card[] orderedCards = {new Card("7c"), new Card("7d"), new Card("3c"), new Card("3s"), new Card("Kh"), new Card("6c"), new Card("4s")};
-        assertThat(h.getCards().toArray(),is(equalTo(orderedCards)));
+
+        assertThat(h.compareToCardsArray(orderedCards), is(true));
     }
 
+    @Test
+    public void TestSetOrdering(){
+        Hand h = new Hand("Qh 6c 7c Qs Kh 3s Qd");
+        Card[] orderedCards = {new Card("Qh"), new Card("Qs"), new Card("Qd"), new Card("Kh"), new Card("7c"), new Card("6c"), new Card("3s")};
 
+        assertThat(h.compareToCardsArray(orderedCards), is(true));
+    }
+
+    @Test
+    public void TestFullOrdering(){
+        Hand h = new Hand("Qh Kc 7c Qs Kh 3s Qd");
+        Card[] orderedCards = {new Card("Qh"), new Card("Qs"), new Card("Qd"), new Card("Kh"), new Card("Kc"), new Card("7c"), new Card("3s")};
+
+        assertThat(h.compareToCardsArray(orderedCards), is(true));
+    }
 }
