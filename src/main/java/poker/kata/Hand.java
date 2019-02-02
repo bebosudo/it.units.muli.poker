@@ -3,11 +3,8 @@ package poker.kata;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import poker.kata.Card;
-
 
 
 public class Hand{
@@ -48,13 +45,13 @@ public class Hand{
             case HIGH_CARD:
                 r = compareHigh(h);
                 break;
-            case ONE_PAIR:
+            case PAIR:
                 r = comparePair(h);
                 break;
-            case TWO_PAIR:
+            case TWO_PAIRS:
                 r = compareDouble(h);
                 break;
-            case SET:
+            case THREE_OF_A_KIND:
                 r = compareSet(h);
                 break;
             case STRAIGHT:
@@ -63,10 +60,10 @@ public class Hand{
             case FLUSH:
                 r = compareFlush(h);
                 break;
-            case FULL:
+            case FULL_HOUSE:
                 r = compareFull(h);
                 break;
-            case QUADS:
+            case FOUR_OF_A_KIND:
                 r = compareQuad(h);
                 break;
             case STRAIGHT_FLUSH:
@@ -83,11 +80,11 @@ public class Hand{
             return;
         }
         if( this.isQuad() ){
-            score = CardHands.QUADS;
+            score = CardHands.FOUR_OF_A_KIND;
             return;
         }
         if( this.isFull() ){
-            score = CardHands.FULL;
+            score = CardHands.FULL_HOUSE;
             return;
         }
         if( this.isFlush() ){
@@ -99,15 +96,15 @@ public class Hand{
             return;
         }
         if( this.isSet() ){
-            score = CardHands.SET;
+            score = CardHands.THREE_OF_A_KIND;
             return;
         }
         if( this.isDouble() ){
-            score = CardHands.TWO_PAIR;
+            score = CardHands.TWO_PAIRS;
             return;
         }
         if( this.isPair() ){
-            score = CardHands.ONE_PAIR;
+            score = CardHands.PAIR;
             return;
         }
 
