@@ -205,7 +205,7 @@ public class HandTest {
         Hand h = new Hand("9c 6c 7c 4s Kh 3s 5d");
         Card[] orderedCards = {new Card("7c"), new Card("6c"), new Card("5d"), new Card("4s"), new Card("3s"), new Card("Kh"), new Card("9c")};
 
-        assertThat(h.getCards(), is(equalTo(orderedCards)));
+        assertThat(h.compareToCardsArray(orderedCards), is(true));
     }
 
     @Test
@@ -246,6 +246,14 @@ public class HandTest {
         Card[] orderedCards = {new Card("Qh"), new Card("Qs"), new Card("Qd"), new Card("Qc"), new Card("Kc"), new Card("Kh"), new Card("7c")};
 
         assertThat(h.compareToCardsArray(orderedCards), is(true));
+    }
+
+    @Test
+    public void TestWrongOrderingForQuad(){
+        Hand h = new Hand("Qh Kc 7c Qs Kh Qc Qd");
+        Card[] orderedCards = {new Card("7c"), new Card("Qs"), new Card("Qd"), new Card("Qc"), new Card("Kc"), new Card("Kh"), new Card("Qh")};
+
+        assertThat(h.compareToCardsArray(orderedCards), is(false));
     }
 
 }
