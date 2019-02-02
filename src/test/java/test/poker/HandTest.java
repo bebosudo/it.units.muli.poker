@@ -2,9 +2,9 @@ package test.poker;
 
 
 import org.junit.Test;
-import poker.kata.Card;
 import poker.kata.Rank;
 import poker.kata.Hand;
+import poker.kata.Card;
 
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -200,9 +200,22 @@ public class HandTest {
     public void TestStraightOrdering(){
         Hand h = new Hand("9c 6c 7c 4s Kh 3s 5d");
         Card[] orderedCards = {new Card("7c"), new Card("6c"), new Card("5d"), new Card("4s"), new Card("3s"), new Card("Kh"), new Card("9c")};
-        for (int i = 0; i < h.size(); i++) {
-            assertThat(h.getCards(i), is(equalTo(orderedCards[i])));
-        }
+        assertThat(h.getCards().toArray(),is(equalTo(orderedCards)));
     }
+
+    @Test
+    public void TestPairOrdering(){
+        Hand h = new Hand("9c 6c 7c 4s Kh 3s 7d");
+        Card[] orderedCards = {new Card("7c"), new Card("7d"), new Card("Kh"), new Card("9c"), new Card("6c"), new Card("4s"), new Card("3s")};
+        assertThat(h.getCards().toArray(),is(equalTo(orderedCards)));
+    }
+
+    @Test
+    public void TestDoubleOrdering(){
+        Hand h = new Hand("3c 6c 7c 4s Kh 3s 7d");
+        Card[] orderedCards = {new Card("7c"), new Card("7d"), new Card("3c"), new Card("3s"), new Card("Kh"), new Card("6c"), new Card("4s")};
+        assertThat(h.getCards().toArray(),is(equalTo(orderedCards)));
+    }
+
 
 }

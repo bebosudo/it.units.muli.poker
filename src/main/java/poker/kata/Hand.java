@@ -38,8 +38,12 @@ public class Hand {
         setScore();
     }
 
-    public Card getCards(int i) {
+    public Card getCard(int i) {
         return cards.get(i);
+    }
+
+    public ArrayList<Card> getCards(){
+        return cards;
     }
 
     public String getOriginal() {
