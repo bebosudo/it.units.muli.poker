@@ -118,7 +118,7 @@ public class Hand {
             return;
         }
 
-        score = CardHands.HIGH_CARD;
+        score = Rank.HIGH_CARD;
     }
 
 
@@ -138,7 +138,7 @@ public class Hand {
         //search into arrayFrom if it can find a given group of cards, then it pops the group from arrayFrom
         //and pushes it into arrayTo
         for(int i=0; i<arrayFrom.size()-groupLength+1; i++) {
-            if (cards.get(i).getRank().equals(cards.get(i+groupLength-1).getRank()))
+            if (cards.get(i).getFace().equals(cards.get(i+groupLength-1).getFace()))
                 popCards(arrayFrom, arrayTo, i, i+groupLength);
         }
     }
