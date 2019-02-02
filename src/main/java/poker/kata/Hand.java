@@ -18,7 +18,7 @@ public class Hand {
     private ArrayList<Card> cards;
     private CardHands score;
 
-    public Hand(String HandStr) {
+
     private static final int FIND_PAIR = 2;
     private static final int FIND_SET = 3;
 
