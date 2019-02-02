@@ -15,11 +15,25 @@ import static org.junit.Assert.assertThat;
 public class HandTest {
 
     @Test
+    public void TestHighCard(){
+        Hand h = new Hand("Kc 9s Qs Ad 4d 3d 2s");
+        assertThat(h.getScore(), is(equalTo(CardHands.HIGH_CARD)));
+
+        h = new Hand("5c 9s Ks Ad 4d 3d 2s");
+        assertThat(h.getScore(), is(equalTo(CardHands.HIGH_CARD)));
+
+        h = new Hand("6c 9s 5s Ac 4d 3d 2s");
+        assertThat(h.getScore(), is(equalTo(CardHands.HIGH_CARD)));
+
+        h = new Hand("7c 9s 8s Ad 4d 3d 2s");
+        assertThat(h.getScore(), is(equalTo(CardHands.HIGH_CARD)));
+    }
+
+    @Test
     public void TestPairKK(){
         Hand h = new Hand("Kc 9s Ks Ad 4d 3d 2s");
         assertThat(h.getScore(), is(equalTo(CardHands.PAIR)));
     }
-
 
     @Test
     public void TestPair33(){
