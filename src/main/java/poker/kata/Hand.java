@@ -3,11 +3,11 @@ package poker.kata;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.toList;
 
 public class Hand {
 
@@ -20,7 +20,7 @@ public class Hand {
     private static final int FIND_SET = 3;
     private static final int FIND_QUAD = 4;
 
-    public Hand(String HandStr){
+    public Hand(String HandStr) {
 
         original = HandStr;
         cards = new ArrayList();
@@ -48,6 +48,10 @@ public class Hand {
 
     public Rank getScore() {
         return score;
+    }
+
+    public int size() {
+        return cards.size();
     }
 
     public int compare(Hand h) {
@@ -84,37 +88,58 @@ public class Hand {
         return r;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Hand hand = (Hand) o;
+        return Objects.equals(cards, hand.cards);
+    }
 
-    private void setScore(){
-        if( this.orderByFlush() && this.orderByStraight() ) {
+    @Override
+    public int hashCode() {
+        return Objects.hash(cards);
+    }
+
+    @Override
+    public String toString() {
+        return "Hand{" +
+                "original='" + original + '\'' +
+                ", cards=" + cards +
+                ", score=" + score +
+                '}';
+    }
+
+    private void setScore() {
+        if (this.orderByFlush() && this.orderByStraight()) {
             score = Rank.STRAIGHT_FLUSH;
             return;
         }
-        if( this.orderByQuad() ){
+        if (this.orderByQuad()) {
             score = Rank.FOUR_OF_A_KIND;
             return;
         }
-        if( this.orderByFull() ){
+        if (this.orderByFull()) {
             score = Rank.FULL_HOUSE;
             return;
         }
-        if( this.orderByFlush() ){
+        if (this.orderByFlush()) {
             score = Rank.FLUSH;
             return;
         }
-        if( this.orderByStraight() ){
+        if (this.orderByStraight()) {
             score = Rank.STRAIGHT;
             return;
         }
-        if( this.orderBySet() ){
+        if (this.orderBySet()) {
             score = Rank.THREE_OF_A_KIND;
             return;
         }
-        if( this.orderByDouble() ){
+        if (this.orderByDouble()) {
             score = Rank.TWO_PAIRS;
             return;
         }
-        if( this.orderByPair() ){
+        if (this.orderByPair()) {
             score = Rank.PAIR;
             return;
         }
@@ -123,7 +148,7 @@ public class Hand {
     }
 
 
-    private void sortByRank(){
+    private void sortByRank() {
         Collections.sort(cards, Card.COMPARE_BY_RANK);
     }
 
@@ -131,31 +156,30 @@ public class Hand {
         Collections.sort(cards, Card.COMPARE_BY_RANK_DECR);
     }
 
-    private void sortBySuit(){
+    private void sortBySuit() {
         Collections.sort(cards, Card.COMPARE_BY_SUIT);
     }
 
-    private void searchForGroupOfCardsAndPop(ArrayList<Card> arrayFrom, ArrayList<Card> arrayTo, int groupLength){
+    private void searchForGroupOfCardsAndPop(ArrayList<Card> arrayFrom, ArrayList<Card> arrayTo, int groupLength) {
         //search into arrayFrom if it can find a given group of cards, then it pops the group from arrayFrom
         //and pushes it into arrayTo
-        for(int i=0; i<arrayFrom.size()-groupLength+1; i++) {
-            if (cards.get(i).getFace().equals(cards.get(i+groupLength-1).getFace())) {
+        for (int i = 0; i < arrayFrom.size() - groupLength + 1; i++) {
+            if (cards.get(i).getFace().equals(cards.get(i + groupLength - 1).getFace())) {
                 popCards(arrayFrom, arrayTo, i, i + groupLength);
                 return;
             }
         }
     }
 
-    private void popCards(ArrayList<Card> arrayFrom, ArrayList<Card> arrayTo, int minIndex, int maxIndex){
-        int j=minIndex;
-        while(j<maxIndex){
+    private void popCards(ArrayList<Card> arrayFrom, ArrayList<Card> arrayTo, int minIndex, int maxIndex) {
+        int j = minIndex;
+        while (j < maxIndex) {
             arrayTo.add(arrayFrom.remove(minIndex));
             j++;
         }
     }
 
-
-    private boolean switchCardArraysAndReturnTrue(ArrayList<Card> orderedCards){
+    private boolean switchCardArraysAndReturnTrue(ArrayList<Card> orderedCards) {
         popCards(cards, orderedCards, 0, cards.size());
         //replaces the cards arrayList with the new one
         cards = orderedCards;
@@ -174,25 +198,25 @@ public class Hand {
 
         //if the new arraylist has the size of the group, it means it has found the desided group, then proceeds
         //on to the next group
-        if(orderedCards.size() == groupLarger){
-            if(groupSmaller > 0) {
+        if (orderedCards.size() == groupLarger) {
+            if (groupSmaller > 0) {
                 searchForGroupOfCardsAndPop(cards, orderedCards, groupSmaller);
                 if (orderedCards.size() == groupLarger + groupSmaller) {
-                    return switchCardArraysAndReturnTrue( orderedCards);
+                    return switchCardArraysAndReturnTrue(orderedCards);
 
                 } else {
                     cards = cardsBackup;
                     return false;
                 }
-            }else{
-                return switchCardArraysAndReturnTrue( orderedCards);
+            } else {
+                return switchCardArraysAndReturnTrue(orderedCards);
             }
-        }else{
+        } else {
             return false;
         }
     }
 
-    private boolean orderByPair(){
+    private boolean orderByPair() {
         this.sortByRankDecreasing();
         return findGroupsIntoOrderedCards(FIND_PAIR, NO_GROUP);
     }
@@ -202,38 +226,71 @@ public class Hand {
         return findGroupsIntoOrderedCards(FIND_PAIR, FIND_PAIR);
     }
 
-    // tris
     private boolean orderBySet() {
         this.sortByRankDecreasing();
-        return findGroupsIntoOrderedCards(3,0);
+        return findGroupsIntoOrderedCards(3, 0);
     }
 
     private boolean orderByStraight() {
-        this.sortByRank();
-        Card[] uniqueSorted = cards.stream().filter(Utils.distinctByKey(Card::getFace)).toArray(Card[]::new);
+        return orderByStraight(cards.size());
+    }
+
+    private boolean orderByStraight(int straightUpToIndex) {
+        ArrayList<Card> partialCards =
+                cards.stream()
+                        .limit(straightUpToIndex)
+                        .sorted(Card.COMPARE_BY_RANK_DECR)
+                        .filter(Utils.distinctByKey(Card::getFace))
+                        .collect(Collectors.toCollection(ArrayList::new));
 
         // There must be at least 5 unique cards to make a Straight.
-        if (uniqueSorted.length < 5) {
+        if (partialCards.size() < 5) {
             return false;
         }
 
+        // Treat the Ace separately: check if there's a straight with 'A .. 5 4 3 2'.
+        if (partialCards.get(0).getFace() == CardFace.ACE &&
+                partialCards.get(partialCards.size() - 1).getFace() == CardFace.TWO &&
+                partialCards.get(partialCards.size() - 4).getFace() == CardFace.FIVE) {
+
+            for (int lastCardsId = 0; lastCardsId < 4; lastCardsId++) {
+                cards.set(3 - lastCardsId, partialCards.remove(partialCards.size() - 1 ));
+            }
+
+            // Pop out the Ace to the last position of the straight.
+            cards.set(4, partialCards.remove(0));
+
+            // Fill `cards' with the leftovers.
+            for (int leftoversCardsId = 0; leftoversCardsId < partialCards.size(); leftoversCardsId++) {
+                cards.set(leftoversCardsId + 5, partialCards.remove(0));
+            }
+
+            return true;
+        }
+
         // Check if the first three quintets are a Straight.
-        for (int i = 0; i < uniqueSorted.length - 4; i++) {
-            if (uniqueSorted[i + 4].getFace().getValue() - uniqueSorted[i].getFace().getValue() == 4) {
+        for (int i = 0; i < partialCards.size() - 4; i++) {
+            if (partialCards.get(i).getFace().getValue() - partialCards.get(i + 4).getFace().getValue() == 4) {
+
+                // Overwrite the cards array with straight we just found.
+                for (int fillCardsArrayId = 0; fillCardsArrayId < 5; fillCardsArrayId++) {
+                    // The card to pop in the temp array will be always the same, because at the
+                    // previous iteration we removed its left.
+                    cards.set(fillCardsArrayId, partialCards.remove(i));
+                }
+
+                // Fill `cards' with the leftovers.
+                int cardsToRemove = partialCards.size();
+                for (int leftoversCardsId = 0; leftoversCardsId < cardsToRemove; leftoversCardsId++) {
+                    cards.set(leftoversCardsId + 5, partialCards.remove(0));
+                }
+
                 return true;
             }
         }
 
-        // Treat the Ace separately: check if there's a straight with '2 3 4 5 .. A'.
-        if (getCards(uniqueSorted.length - 1).getFace() == CardFace.ACE &&
-                uniqueSorted[0].getFace() == CardFace.TWO &&
-                uniqueSorted[3].getFace() == CardFace.FIVE) {
-            return true;
-        }
-
         return false;
     }
-
 
     private boolean orderByFlush() {
         boolean b = false;
@@ -247,8 +304,7 @@ public class Hand {
         return b;
     }
 
-
-    private boolean orderByFull(){
+    private boolean orderByFull() {
 
         // after sorting the pair can be in front 22444 or after 44455
         // write a function that put the tris in front of it (useful also for compareFull() )
@@ -258,12 +314,10 @@ public class Hand {
 
     }
 
-
     private boolean orderByQuad() {
         this.sortByRankDecreasing();
         return findGroupsIntoOrderedCards(FIND_QUAD, NO_GROUP);
     }
-
 
     // -1 this is smaller, 0 equals, 1 the other is better
     private int compareHigh(Hand h) {

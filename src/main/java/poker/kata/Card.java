@@ -1,8 +1,9 @@
 package poker.kata;
 
 import java.util.Comparator;
+import java.util.Objects;
 
-public class Card{
+public class Card {
     private CardFace face;
     private CardSuit suit;
 
@@ -86,6 +87,27 @@ public class Card{
         return suit;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Card card = (Card) o;
+        return face == card.face &&
+                suit == card.suit;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(face, suit);
+    }
+
+    @Override
+    public String toString() {
+        return "Card{" +
+                "face=" + face +
+                ", suit=" + suit +
+                '}';
+    }
 
     public static Comparator<Card> COMPARE_BY_RANK = new Comparator<Card>() {
         @Override
