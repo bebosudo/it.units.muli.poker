@@ -1,22 +1,17 @@
 package poker.kata;
 
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toList;
 
 public class Hand {
 
     private String original;
     private ArrayList<Card> cards;
-    private CardHands score;
+    private Rank score;
 
 
     private static final int FIND_PAIR = 2;
@@ -48,7 +43,7 @@ public class Hand {
         return original;
     }
 
-    public CardHands getScore() {
+    public Rank getScore() {
         return score;
     }
 
@@ -89,39 +84,39 @@ public class Hand {
 
     private void setScore(){
         if( this.isFlush() && this.isStraight() ) {
-            score = CardHands.STRAIGHT_FLUSH;
+            score = Rank.STRAIGHT_FLUSH;
             return;
         }
         if( this.isQuad() ){
-            score = CardHands.FOUR_OF_A_KIND;
+            score = Rank.FOUR_OF_A_KIND;
             return;
         }
         if( this.isFull() ){
-            score = CardHands.FULL_HOUSE;
+            score = Rank.FULL_HOUSE;
             return;
         }
         if( this.isFlush() ){
-            score = CardHands.FLUSH;
+            score = Rank.FLUSH;
             return;
         }
         if( this.isStraight() ){
-            score = CardHands.STRAIGHT;
+            score = Rank.STRAIGHT;
             return;
         }
         if( this.isSet() ){
-            score = CardHands.THREE_OF_A_KIND;
+            score = Rank.THREE_OF_A_KIND;
             return;
         }
         if( this.isDouble() ){
-            score = CardHands.TWO_PAIRS;
+            score = Rank.TWO_PAIRS;
             return;
         }
         if( this.isPair() ){
-            score = CardHands.PAIR;
+            score = Rank.PAIR;
             return;
         }
 
-        score = CardHands.HIGH_CARD;
+        score = Rank.HIGH_CARD;
     }
 
 
@@ -141,7 +136,7 @@ public class Hand {
         //search into arrayFrom if it can find a given group of cards, then it pops the group from arrayFrom
         //and pushes it into arrayTo
         for(int i=0; i<arrayFrom.size()-groupLength+1; i++) {
-            if (cards.get(i).getRank().equals(cards.get(i+groupLength-1).getRank()))
+            if (cards.get(i).getFace().equals(cards.get(i+groupLength-1).getFace()))
                 popCards(arrayFrom, arrayTo, i, i+groupLength);
         }
     }
@@ -198,7 +193,7 @@ public class Hand {
         boolean b = false;
         this.sortByRankDecreasing();
         for( int i=0; i<6; i++){
-            if( cards.get(i).getRank().equals( cards.get(i+1).getRank()) ) {
+            if( cards.get(i).getFace().equals( cards.get(i+1).getFace()) ) {
                 b = true;
                 break;
             }
@@ -210,9 +205,9 @@ public class Hand {
         boolean b = false;
         this.sortByRankDecreasing();
         for(int i=0; i<6; i++){
-            if( cards.get(i).getRank().equals( cards.get(i+1).getRank()) ){
+            if( cards.get(i).getFace().equals( cards.get(i+1).getFace()) ){
                 for( int j=i+2; j<6; j++ ){
-                    if( cards.get(j).getRank().equals( cards.get(j+1).getRank())){
+                    if( cards.get(j).getFace().equals( cards.get(j+1).getFace())){
                         b = true;
                         break;
                     }
@@ -227,7 +222,7 @@ public class Hand {
         boolean b = false;
         this.sortByRankDecreasing();
         for( int i=0; i<5; i++ ){
-            if( cards.get(i).getRank().equals( cards.get(i+2).getRank()) ){
+            if( cards.get(i).getFace().equals( cards.get(i+2).getFace()) ){
                 b = true;
                 break;
             }
@@ -237,7 +232,7 @@ public class Hand {
 
     private boolean isStraight() {
         this.sortByRank();
-        Card[] uniqueSorted = cards.stream().filter(Utils.distinctByKey(Card::getRank)).toArray(Card[]::new);
+        Card[] uniqueSorted = cards.stream().filter(Utils.distinctByKey(Card::getFace)).toArray(Card[]::new);
 
         // There must be at least 5 unique cards to make a Straight.
         if (uniqueSorted.length < 5) {
@@ -246,15 +241,15 @@ public class Hand {
 
         // Check if the first three quintets are a Straight.
         for (int i = 0; i < uniqueSorted.length - 4; i++) {
-            if (uniqueSorted[i + 4].getRank().getValue() - uniqueSorted[i].getRank().getValue() == 4) {
+            if (uniqueSorted[i + 4].getFace().getValue() - uniqueSorted[i].getFace().getValue() == 4) {
                 return true;
             }
         }
 
         // Treat the Ace separately: check if there's a straight with '2 3 4 5 .. A'.
-        if (getCards(uniqueSorted.length - 1).getRank() == CardRank.ACE &&
-                uniqueSorted[0].getRank() == CardRank.TWO &&
-                uniqueSorted[3].getRank() == CardRank.FIVE) {
+        if (getCards(uniqueSorted.length - 1).getFace() == CardFace.ACE &&
+                uniqueSorted[0].getFace() == CardFace.TWO &&
+                uniqueSorted[3].getFace() == CardFace.FIVE) {
             return true;
         }
 
@@ -290,7 +285,7 @@ public class Hand {
         boolean b = false;
         this.sortByRankDecreasing();
         for( int i=0; i<4; i++ ){
-            if( cards.get(i).getRank().equals( cards.get(i+3).getRank()) ){
+            if( cards.get(i).getFace().equals( cards.get(i+3).getFace()) ){
                 b = true;
                 break;
             }
@@ -339,7 +334,7 @@ public class Hand {
 
     public void printCards() {
         for (int i = 0; i < 7; i++) {
-            System.out.println(String.valueOf(i + 1) + ":  " + cards.get(i).getRank() + " of " + cards.get(i).getSuit());
+            System.out.println(String.valueOf(i + 1) + ":  " + cards.get(i).getFace() + " of " + cards.get(i).getSuit());
         }
     }
 
