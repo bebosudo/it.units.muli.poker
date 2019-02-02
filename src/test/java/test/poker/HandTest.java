@@ -27,12 +27,47 @@ public class HandTest {
         assertThat(h.getScore(), is(equalTo(CardHands.PAIR)));
     }
 
+
     @Test
     public void TestPairAA(){
         Hand h = new Hand("3s 7d 8s Ac Ad Kd 6d");
         assertThat(h.getScore(), is(equalTo(CardHands.PAIR)));
     }
 
-    
+    @Test
+    public void TestDoubleKK99(){
+        Hand h = new Hand("Kc 9s Ks 9d 5s 5d 6d");
+        assertThat(h.getScore(), is(equalTo(CardHands.TWO_PAIRS)));
+    }
+
+    @Test
+    public void TestDouble5533(){
+        Hand h = new Hand("3d 4h 5h 3s Ad 5s 6h");
+        assertThat(h.getScore(), is(equalTo(CardHands.TWO_PAIRS)));
+    }
+
+    @Test
+    public void TestDoubleTT99(){
+        Hand h = new Hand("Th 9d Td 8c 9h 3d Js");
+        assertThat(h.getScore(), is(equalTo(CardHands.TWO_PAIRS)));
+    }
+
+    @Test
+    public void TestSet444(){
+        Hand h = new Hand("3d 4h 4s Ad Kd 9c 4c");
+        assertThat(h.getScore(), is(equalTo(CardHands.THREE_OF_A_KIND)));
+    }
+
+    @Test
+    public void TestSetQQQ(){
+        Hand h = new Hand("Qh Ks Ad Qs 9c Qc 4c");
+        assertThat(h.getScore(), is(equalTo(CardHands.THREE_OF_A_KIND)));
+    }
+
+    @Test
+    public void TestSet888(){
+        Hand h = new Hand("8d 5d 8c Th 8s 4h Kc");
+        assertThat(h.getScore(), is(equalTo(CardHands.THREE_OF_A_KIND)));
+    }
 
 }
