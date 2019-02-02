@@ -210,5 +210,12 @@ public class HandTest {
         assertThat(h.getCards().toArray(),is(equalTo(orderedCards)));
     }
 
+    @Test
+    public void TestDoubleOrdering(){
+        Hand h = new Hand("3c 6c 7c 4s Kh 3s 7d");
+        Card[] orderedCards = {new Card("7c"), new Card("7d"), new Card("3c"), new Card("3s"), new Card("Kh"), new Card("6c"), new Card("4s")};
+        assertThat(h.getCards().toArray(),is(equalTo(orderedCards)));
+    }
+
 
 }
