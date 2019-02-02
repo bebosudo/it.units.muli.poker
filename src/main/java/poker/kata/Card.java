@@ -94,11 +94,20 @@ public class Card{
         }
     };
 
+    public static Comparator<Card> COMPARE_BY_RANK_DECR = new Comparator<Card>() {
+        @Override
+        public int compare(Card o1, Card o2) {
+            return o2.rank.compareTo(o1.rank);
+        }
+    };
+
     public static Comparator<Card> COMPARE_BY_SUIT = new Comparator<Card>() {
         @Override
         public int compare(Card o1, Card o2) {
             return o1.suit.compareTo(o2.suit);
         }
     };
+
+
 }
 

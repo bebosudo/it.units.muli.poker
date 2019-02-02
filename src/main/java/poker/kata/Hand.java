@@ -1,10 +1,16 @@
 package poker.kata;
 
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 public class Hand {
 
@@ -13,6 +19,10 @@ public class Hand {
     private CardHands score;
 
     public Hand(String HandStr) {
+    private static final int FIND_PAIR = 2;
+    private static final int FIND_SET = 3;
+
+    public Hand(String HandStr){
 
         original = HandStr;
         cards = new ArrayList<Card>();
@@ -77,36 +87,36 @@ public class Hand {
     }
 
 
-    private void setScore() {
-        if (this.isFlush() && this.isStraight()) {
+    private void setScore(){
+        if( this.isFlush() && this.isStraight() ) {
             score = CardHands.STRAIGHT_FLUSH;
             return;
         }
-        if (this.isQuad()) {
+        if( this.isQuad() ){
             score = CardHands.FOUR_OF_A_KIND;
             return;
         }
-        if (this.isFull()) {
+        if( this.isFull() ){
             score = CardHands.FULL_HOUSE;
             return;
         }
-        if (this.isFlush()) {
+        if( this.isFlush() ){
             score = CardHands.FLUSH;
             return;
         }
-        if (this.isStraight()) {
+        if( this.isStraight() ){
             score = CardHands.STRAIGHT;
             return;
         }
-        if (this.isSet()) {
+        if( this.isSet() ){
             score = CardHands.THREE_OF_A_KIND;
             return;
         }
-        if (this.isDouble()) {
+        if( this.isDouble() ){
             score = CardHands.TWO_PAIRS;
             return;
         }
-        if (this.isPair()) {
+        if( this.isPair() ){
             score = CardHands.PAIR;
             return;
         }
@@ -115,20 +125,80 @@ public class Hand {
     }
 
 
-    private void sortByRank() {
+    private void sortByRank(){
         Collections.sort(cards, Card.COMPARE_BY_RANK);
     }
 
-    private void sortBySuit() {
+    private void sortByRankDecreasing() {
+        Collections.sort(cards, Card.COMPARE_BY_RANK_DECR);
+    }
+
+    private void sortBySuit(){
         Collections.sort(cards, Card.COMPARE_BY_SUIT);
     }
 
+    private void searchForGroupOfCardsAndPop(ArrayList<Card> arrayFrom, ArrayList<Card> arrayTo, int groupLength){
+        //search into arrayFrom if it can find a given group of cards, then it pops the group from arrayFrom
+        //and pushes it into arrayTo
+        for(int i=0; i<arrayFrom.size()-groupLength+1; i++) {
+            if (cards.get(i).getRank().equals(cards.get(i+groupLength-1).getRank()))
+                popCards(arrayFrom, arrayTo, i, i+groupLength);
+        }
+    }
 
-    private boolean isPair() {
+    private void popCards(ArrayList<Card> arrayFrom, ArrayList<Card> arrayTo, int minIndex, int maxIndex){
+        int j=minIndex;
+        while(j<maxIndex){
+            arrayTo.add(arrayFrom.remove(minIndex));
+            j++;
+        }
+    }
+
+
+    private boolean findGroupsIntoOrderedCards(int findGroup1, int findGroup2) {
+        int groupLarger = Math.max(findGroup1, findGroup2);
+        int groupSmaller = Math.min(findGroup1, findGroup2);
+
+        ArrayList<Card> cardsBackup = cards.stream().collect(Collectors.toCollection(ArrayList::new));
+        //This arraylist will store new cards ordered by (groupLarger + groupSmaller + everything else)
+        ArrayList<Card> orderedCards = new ArrayList();
+
+        searchForGroupOfCardsAndPop(cards, orderedCards, groupLarger);
+
+        //if the new arraylist has the size of the group, it means it has found the desided group, then proceeds
+        //on to the next group
+        if(orderedCards.size() == groupLarger){
+            if(groupSmaller > 0) {
+                searchForGroupOfCardsAndPop(cards, orderedCards, groupSmaller);
+                if (orderedCards.size() == groupLarger + groupSmaller) {
+                    //duplicate code - remove
+                    popCards(cards, orderedCards, 0, cards.size());
+                    //replaces the cards arrayList with the new one
+                    cards = orderedCards;
+                    return true;
+
+                } else {
+                    //found first group, but not the second, revert to initial status and return false
+                    cards = cardsBackup;
+                    return false;
+                }
+            }else{
+                //duplicate code - remove
+                popCards(cards, orderedCards, 0, cards.size());
+                //replaces the cards arrayList with the new one
+                cards = orderedCards;
+                return true;
+            }
+        }else{
+            return false;
+        }
+    }
+
+    private boolean isPair(){
         boolean b = false;
-        this.sortByRank();
-        for (int i = 0; i < 6; i++) {
-            if (cards.get(i).getRank().equals(cards.get(i + 1).getRank())) {
+        this.sortByRankDecreasing();
+        for( int i=0; i<6; i++){
+            if( cards.get(i).getRank().equals( cards.get(i+1).getRank()) ) {
                 b = true;
                 break;
             }
@@ -138,11 +208,11 @@ public class Hand {
 
     private boolean isDouble() {
         boolean b = false;
-        this.sortByRank();
-        for (int i = 0; i < 6; i++) {
-            if (cards.get(i).getRank().equals(cards.get(i + 1).getRank())) {
-                for (int j = i + 2; j < 6; j++) {
-                    if (cards.get(j).getRank().equals(cards.get(j + 1).getRank())) {
+        this.sortByRankDecreasing();
+        for(int i=0; i<6; i++){
+            if( cards.get(i).getRank().equals( cards.get(i+1).getRank()) ){
+                for( int j=i+2; j<6; j++ ){
+                    if( cards.get(j).getRank().equals( cards.get(j+1).getRank())){
                         b = true;
                         break;
                     }
@@ -155,9 +225,9 @@ public class Hand {
     // tris
     private boolean isSet() {
         boolean b = false;
-        this.sortByRank();
-        for (int i = 0; i < 5; i++) {
-            if (cards.get(i).getRank().equals(cards.get(i + 2).getRank())) {
+        this.sortByRankDecreasing();
+        for( int i=0; i<5; i++ ){
+            if( cards.get(i).getRank().equals( cards.get(i+2).getRank()) ){
                 b = true;
                 break;
             }
@@ -205,19 +275,22 @@ public class Hand {
     }
 
 
-    private boolean isFull() {
-        boolean b = false;
+    private boolean isFull(){
+
         // after sorting the pair can be in front 22444 or after 44455
         // write a function that put the tris in front of it (useful also for compareFull() )
-        return b;
+        this.sortByRankDecreasing();
+
+        return findGroupsIntoOrderedCards(FIND_SET, FIND_PAIR);
+
     }
 
 
     private boolean isQuad() {
         boolean b = false;
-        this.sortByRank();
-        for (int i = 0; i < 4; i++) {
-            if (cards.get(i).getRank().equals(cards.get(i + 3).getRank())) {
+        this.sortByRankDecreasing();
+        for( int i=0; i<4; i++ ){
+            if( cards.get(i).getRank().equals( cards.get(i+3).getRank()) ){
                 b = true;
                 break;
             }
