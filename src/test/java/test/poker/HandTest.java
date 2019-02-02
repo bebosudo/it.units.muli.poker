@@ -84,4 +84,22 @@ public class HandTest {
         assertThat(h.getScore(), is(equalTo(CardHands.THREE_OF_A_KIND)));
     }
 
+
+
+    @Test
+    public void TestFull(){
+        Hand h = new Hand("Kd 2d 3h Kh 2s 7c Ks");
+        assertThat(h.getScore(), is(equalTo(CardHands.FULL_HOUSE)));
+
+        Hand h = new Hand("Ad As 3s Ah Ks 7c Kc");
+        assertThat(h.getScore(), is(equalTo(CardHands.FULL_HOUSE)));
+
+        Hand h = new Hand("7d 2d 7h 8h 3h 7c 2c");
+        assertThat(h.getScore(), is(equalTo(CardHands.FULL_HOUSE)));
+
+        Hand h = new Hand("Kc 9s Ks Kd 9d 3c 6d");
+        assertThat(h.getScore(), is(equalTo(CardHands.FULL_HOUSE)));
+
+    }
+
 }
