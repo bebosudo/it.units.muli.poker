@@ -239,4 +239,13 @@ public class HandTest {
 
         assertThat(h.compareToCardsArray(orderedCards), is(true));
     }
+
+    @Test
+    public void TestQuadOrdering(){
+        Hand h = new Hand("Qh Kc 7c Qs Kh Qc Qd");
+        Card[] orderedCards = {new Card("Qh"), new Card("Qs"), new Card("Qd"), new Card("Qc"), new Card("Kc"), new Card("Kh"), new Card("7c")};
+
+        assertThat(h.compareToCardsArray(orderedCards), is(true));
+    }
+
 }
