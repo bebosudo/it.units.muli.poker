@@ -3,7 +3,7 @@ package poker.kata;
 import java.util.Comparator;
 
 public class Card{
-    private CardRank rank;
+    private CardFace face;
     private CardSuit suit;
 
     public Card(String card) {
@@ -14,47 +14,47 @@ public class Card{
         switch (rankChar) {
             case 'A':
             case 'a':
-                rank = CardRank.ACE;
+                face = CardFace.ACE;
                 break;
             case '2':
-                rank = CardRank.TWO;
+                face = CardFace.TWO;
                 break;
             case '3':
-                rank = CardRank.THREE;
+                face = CardFace.THREE;
                 break;
             case '4':
-                rank = CardRank.FOUR;
+                face = CardFace.FOUR;
                 break;
             case '5':
-                rank = CardRank.FIVE;
+                face = CardFace.FIVE;
                 break;
             case '6':
-                rank = CardRank.SIX;
+                face = CardFace.SIX;
                 break;
             case '7':
-                rank = CardRank.SEVEN;
+                face = CardFace.SEVEN;
                 break;
             case '8':
-                rank = CardRank.EIGHT;
+                face = CardFace.EIGHT;
                 break;
             case '9':
-                rank = CardRank.NINE;
+                face = CardFace.NINE;
                 break;
             case 'T':
             case 't':
-                rank = CardRank.TEN;
+                face = CardFace.TEN;
                 break;
             case 'J':
             case 'j':
-                rank = CardRank.JACK;
+                face = CardFace.JACK;
                 break;
             case 'Q':
             case 'q':
-                rank = CardRank.QUEEN;
+                face = CardFace.QUEEN;
                 break;
             case 'K':
             case 'k':
-                rank = CardRank.KING;
+                face = CardFace.KING;
                 break;
         }
 
@@ -78,8 +78,8 @@ public class Card{
         }
     }
 
-    public CardRank getRank() {
-        return rank;
+    public CardFace getFace() {
+        return face;
     }
 
     public CardSuit getSuit() {
@@ -90,14 +90,14 @@ public class Card{
     public static Comparator<Card> COMPARE_BY_RANK = new Comparator<Card>() {
         @Override
         public int compare(Card o1, Card o2) {
-            return o1.rank.compareTo(o2.rank);
+            return o1.face.compareTo(o2.face);
         }
     };
 
     public static Comparator<Card> COMPARE_BY_RANK_DECR = new Comparator<Card>() {
         @Override
         public int compare(Card o1, Card o2) {
-            return o2.rank.compareTo(o1.rank);
+            return o2.face.compareTo(o1.face);
         }
     };
 
