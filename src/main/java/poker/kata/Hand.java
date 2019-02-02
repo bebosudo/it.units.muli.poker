@@ -15,9 +15,10 @@ public class Hand {
     private ArrayList<Card> cards;
     private Rank score;
 
-
+    private static final int NO_GROUP = 0;
     private static final int FIND_PAIR = 2;
     private static final int FIND_SET = 3;
+    private static final int FIND_QUAD = 4;
 
     public Hand(String HandStr){
 
@@ -138,8 +139,10 @@ public class Hand {
         //search into arrayFrom if it can find a given group of cards, then it pops the group from arrayFrom
         //and pushes it into arrayTo
         for(int i=0; i<arrayFrom.size()-groupLength+1; i++) {
-            if (cards.get(i).getFace().equals(cards.get(i+groupLength-1).getFace()))
-                popCards(arrayFrom, arrayTo, i, i+groupLength);
+            if (cards.get(i).getFace().equals(cards.get(i+groupLength-1).getFace())) {
+                popCards(arrayFrom, arrayTo, i, i + groupLength);
+                return;
+            }
         }
     }
 
@@ -151,6 +154,13 @@ public class Hand {
         }
     }
 
+
+    private boolean switchCardArraysAndReturnTrue(ArrayList<Card> orderedCards){
+        popCards(cards, orderedCards, 0, cards.size());
+        //replaces the cards arrayList with the new one
+        cards = orderedCards;
+        return true;
+    }
 
     private boolean findGroupsIntoOrderedCards(int findGroup1, int findGroup2) {
         int groupLarger = Math.max(findGroup1, findGroup2);
@@ -168,23 +178,14 @@ public class Hand {
             if(groupSmaller > 0) {
                 searchForGroupOfCardsAndPop(cards, orderedCards, groupSmaller);
                 if (orderedCards.size() == groupLarger + groupSmaller) {
-                    //duplicate code - remove
-                    popCards(cards, orderedCards, 0, cards.size());
-                    //replaces the cards arrayList with the new one
-                    cards = orderedCards;
-                    return true;
+                    return switchCardArraysAndReturnTrue( orderedCards);
 
                 } else {
-                    //found first group, but not the second, revert to initial status and return false
                     cards = cardsBackup;
                     return false;
                 }
             }else{
-                //duplicate code - remove
-                popCards(cards, orderedCards, 0, cards.size());
-                //replaces the cards arrayList with the new one
-                cards = orderedCards;
-                return true;
+                return switchCardArraysAndReturnTrue( orderedCards);
             }
         }else{
             return false;
@@ -192,44 +193,19 @@ public class Hand {
     }
 
     private boolean orderByPair(){
-        boolean b = false;
         this.sortByRankDecreasing();
-        for( int i=0; i<6; i++){
-            if( cards.get(i).getFace().equals( cards.get(i+1).getFace()) ) {
-                b = true;
-                break;
-            }
-        }
-        return b;
+        return findGroupsIntoOrderedCards(FIND_PAIR, NO_GROUP);
     }
 
     private boolean orderByDouble() {
-        boolean b = false;
         this.sortByRankDecreasing();
-        for(int i=0; i<6; i++){
-            if( cards.get(i).getFace().equals( cards.get(i+1).getFace()) ){
-                for( int j=i+2; j<6; j++ ){
-                    if( cards.get(j).getFace().equals( cards.get(j+1).getFace())){
-                        b = true;
-                        break;
-                    }
-                }
-            }
-        }
-        return b;
+        return findGroupsIntoOrderedCards(FIND_PAIR, FIND_PAIR);
     }
 
     // tris
     private boolean orderBySet() {
-        boolean b = false;
         this.sortByRankDecreasing();
-        for( int i=0; i<5; i++ ){
-            if( cards.get(i).getFace().equals( cards.get(i+2).getFace()) ){
-                b = true;
-                break;
-            }
-        }
-        return b;
+        return findGroupsIntoOrderedCards(3,0);
     }
 
     private boolean orderByStraight() {
@@ -284,15 +260,8 @@ public class Hand {
 
 
     private boolean orderByQuad() {
-        boolean b = false;
         this.sortByRankDecreasing();
-        for( int i=0; i<4; i++ ){
-            if( cards.get(i).getFace().equals( cards.get(i+3).getFace()) ){
-                b = true;
-                break;
-            }
-        }
-        return b;
+        return findGroupsIntoOrderedCards(FIND_QUAD, NO_GROUP);
     }
 
 
