@@ -111,7 +111,7 @@ public class Hand {
     }
 
     private void setScore() {
-        if (this.orderByFlush() && this.orderByStraight()) {
+        if( this.orderByStraightFlush() ) {
             score = Rank.STRAIGHT_FLUSH;
             return;
         }
@@ -295,12 +295,34 @@ public class Hand {
     private boolean orderByFlush() {
         boolean b = false;
         this.sortBySuit();
-        for (int i = 0; i < 3; i++) {
-            if (cards.get(i).getSuit().equals(cards.get(i + 4).getSuit())) {
+        int i=0, j=0;
+
+
+        for( i=0; i<3; i++){
+            while( j<6 && cards.get(j+1).getSuit().equals( cards.get(i).getSuit() )  ){
+                j++;
+            }
+            if ( (j-i) >= 4 ){
                 b = true;
                 break;
             }
+            i = j;
         }
+
+        ArrayList<Card> orderedCards = new ArrayList();
+
+        for( int ii=i; ii<=j; ii++ ){
+            orderedCards.add( cards.get(ii) );
+        }
+
+        for( int ii=0; ii<7; ii++ ){
+            if( ii<i || ii>j ){
+                orderedCards.add( cards.get(ii));
+            }
+        }
+
+        cards = orderedCards;
+
         return b;
     }
 
@@ -317,6 +339,10 @@ public class Hand {
     private boolean orderByQuad() {
         this.sortByRankDecreasing();
         return findGroupsIntoOrderedCards(FIND_QUAD, NO_GROUP);
+    }
+
+    private boolean orderByStraightFlush(){
+        return false;
     }
 
     // -1 this is smaller, 0 equals, 1 the other is better
@@ -364,11 +390,9 @@ public class Hand {
     }
 
     public static void main(String[] args) {
-        Hand h = new Hand("8d 5d 8c Th 8s 4h Kc");
+        Hand h = new Hand("8d 5d 8c Td 9h 4d Kd");
         h.printCards();
         System.out.println("\n");
-
-        System.out.println(h.orderByStraight());
 
 
 //        h.sortBySuit();
