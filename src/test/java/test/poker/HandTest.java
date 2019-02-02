@@ -19,10 +19,10 @@ public class HandTest {
         Hand h = new Hand("Kc 9s Qs Ad 4d 3d 2s");
         assertThat(h.getScore(), is(equalTo(CardHands.HIGH_CARD)));
 
-        h = new Hand("5c 9s Ks Ad 4d 3d 2s");
+        h = new Hand("5c 9s Ks Ad 4d 3d Qs");
         assertThat(h.getScore(), is(equalTo(CardHands.HIGH_CARD)));
 
-        h = new Hand("6c 9s 5s Ac 4d 3d 2s");
+        h = new Hand("6c 9s 5s Ac 4d 7d 2s");
         assertThat(h.getScore(), is(equalTo(CardHands.HIGH_CARD)));
 
         h = new Hand("7c 9s 8s Ad 4d 3d 2s");
