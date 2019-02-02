@@ -25,7 +25,7 @@ public class Hand {
     public Hand(String HandStr){
 
         original = HandStr;
-        cards = new ArrayList<Card>();
+        cards = new ArrayList();
 
         String reg = "([TtJjQqKkAa\\d][cdshCSDH])";
         Pattern pat = Pattern.compile(reg);
@@ -88,35 +88,35 @@ public class Hand {
 
 
     private void setScore(){
-        if( this.isFlush() && this.isStraight() ) {
+        if( this.orderByFlush() && this.orderByStraight() ) {
             score = CardHands.STRAIGHT_FLUSH;
             return;
         }
-        if( this.isQuad() ){
+        if( this.orderByQuad() ){
             score = CardHands.FOUR_OF_A_KIND;
             return;
         }
-        if( this.isFull() ){
+        if( this.orderByFull() ){
             score = CardHands.FULL_HOUSE;
             return;
         }
-        if( this.isFlush() ){
+        if( this.orderByFlush() ){
             score = CardHands.FLUSH;
             return;
         }
-        if( this.isStraight() ){
+        if( this.orderByStraight() ){
             score = CardHands.STRAIGHT;
             return;
         }
-        if( this.isSet() ){
+        if( this.orderBySet() ){
             score = CardHands.THREE_OF_A_KIND;
             return;
         }
-        if( this.isDouble() ){
+        if( this.orderByDouble() ){
             score = CardHands.TWO_PAIRS;
             return;
         }
-        if( this.isPair() ){
+        if( this.orderByPair() ){
             score = CardHands.PAIR;
             return;
         }
@@ -153,7 +153,6 @@ public class Hand {
             j++;
         }
     }
-
 
     private boolean findGroupsIntoOrderedCards(int findGroup1, int findGroup2) {
         int groupLarger = Math.max(findGroup1, findGroup2);
@@ -194,7 +193,7 @@ public class Hand {
         }
     }
 
-    private boolean isPair(){
+    private boolean orderByPair(){
         boolean b = false;
         this.sortByRankDecreasing();
         for( int i=0; i<6; i++){
@@ -206,7 +205,7 @@ public class Hand {
         return b;
     }
 
-    private boolean isDouble() {
+    private boolean orderByDouble() {
         boolean b = false;
         this.sortByRankDecreasing();
         for(int i=0; i<6; i++){
@@ -223,7 +222,7 @@ public class Hand {
     }
 
     // tris
-    private boolean isSet() {
+    private boolean orderBySet() {
         boolean b = false;
         this.sortByRankDecreasing();
         for( int i=0; i<5; i++ ){
@@ -235,7 +234,7 @@ public class Hand {
         return b;
     }
 
-    private boolean isStraight() {
+    private boolean orderByStraight() {
         this.sortByRank();
         Card[] uniqueSorted = cards.stream().filter(Utils.distinctByKey(Card::getRank)).toArray(Card[]::new);
 
@@ -262,7 +261,7 @@ public class Hand {
     }
 
 
-    private boolean isFlush() {
+    private boolean orderByFlush() {
         boolean b = false;
         this.sortBySuit();
         for (int i = 0; i < 3; i++) {
@@ -275,7 +274,7 @@ public class Hand {
     }
 
 
-    private boolean isFull(){
+    private boolean orderByFull(){
 
         // after sorting the pair can be in front 22444 or after 44455
         // write a function that put the tris in front of it (useful also for compareFull() )
@@ -286,7 +285,7 @@ public class Hand {
     }
 
 
-    private boolean isQuad() {
+    private boolean orderByQuad() {
         boolean b = false;
         this.sortByRankDecreasing();
         for( int i=0; i<4; i++ ){
@@ -348,7 +347,7 @@ public class Hand {
         h.printCards();
         System.out.println("\n");
 
-        System.out.println(h.isStraight());
+        System.out.println(h.orderByStraight());
 
 
 //        h.sortBySuit();
