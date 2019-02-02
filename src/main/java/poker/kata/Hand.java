@@ -111,7 +111,7 @@ public class Hand {
     }
 
     private void setScore() {
-        if( this.orderByStraightFlush() ) {
+        if (this.orderByStraightFlush()) {
             score = Rank.STRAIGHT_FLUSH;
             return;
         }
@@ -235,10 +235,10 @@ public class Hand {
         return orderByStraight(cards.size());
     }
 
-    private boolean orderByStraight(int straightUpToIndex) {
+    private boolean orderByStraight(int straightUpToNumber) {
         ArrayList<Card> partialCards =
                 cards.stream()
-                        .limit(straightUpToIndex)
+                        .limit(straightUpToNumber)
                         .sorted(Card.COMPARE_BY_RANK_DECR)
                         .filter(Utils.distinctByKey(Card::getFace))
                         .collect(Collectors.toCollection(ArrayList::new));
@@ -254,7 +254,7 @@ public class Hand {
                 partialCards.get(partialCards.size() - 4).getFace() == CardFace.FIVE) {
 
             for (int lastCardsId = 0; lastCardsId < 4; lastCardsId++) {
-                cards.set(3 - lastCardsId, partialCards.remove(partialCards.size() - 1 ));
+                cards.set(3 - lastCardsId, partialCards.remove(partialCards.size() - 1));
             }
 
             // Pop out the Ace to the last position of the straight.
@@ -295,29 +295,33 @@ public class Hand {
     private boolean orderByFlush() {
         boolean b = false;
         this.sortBySuit();
-        int i=0, j=0;
+        int i = 0, j = 0;
 
 
-        for( i=0; i<3; i++){
-            while( j<6 && cards.get(j+1).getSuit().equals( cards.get(i).getSuit() )  ){
+        for (i = 0; i < 3; i++) {
+            while (j < 6 && cards.get(j + 1).getSuit().equals(cards.get(i).getSuit())) {
                 j++;
             }
-            if ( (j-i) >= 4 ){
+            if ((j - i) >= 4) {
                 b = true;
                 break;
             }
             i = j;
         }
 
-        ArrayList<Card> orderedCards = new ArrayList();
+        ArrayList<Card> orderedCards = new ArrayList<>();
 
-        for( int ii=i; ii<=j; ii++ ){
-            orderedCards.add( cards.get(ii) );
+        for (int ii = i; ii <= j; ii++) {
+            orderedCards.add(cards.get(ii));
         }
 
-        for( int ii=0; ii<7; ii++ ){
-            if( ii<i || ii>j ){
-                orderedCards.add( cards.get(ii));
+        // Sort the cards that are part of the flush.
+        orderedCards.sort(Card.COMPARE_BY_RANK_DECR);
+
+        // And push all the remaining cards.
+        for (int ii = 0; ii < 7; ii++) {
+            if (ii < i || ii > j) {
+                orderedCards.add(cards.get(ii));
             }
         }
 
@@ -341,7 +345,20 @@ public class Hand {
         return findGroupsIntoOrderedCards(FIND_QUAD, NO_GROUP);
     }
 
-    private boolean orderByStraightFlush(){
+    private boolean orderByStraightFlush() {
+        if (orderByFlush()) {
+
+            // We know for sure that is a flush, so up to index 4 they are all the same suit; we need to understand how
+            // many same-suit cards there are more than the 5 detected by the flush.
+            int sameSuitIndex = 4;
+            while (cards.get(0).getSuit().equals(cards.get(sameSuitIndex + 1).getSuit())) {
+                    sameSuitIndex++;
+            }
+
+            // The index is 1 less than the Number of same-suits.
+            return orderByStraight(sameSuitIndex + 1);
+        }
+
         return false;
     }
 
