@@ -332,4 +332,18 @@ public class HandTest {
         Hand h2 = new Hand("Jd 6h Kd Td 4h 9h Qh");
         assertThat((h1.compare(h2))>0,is(equalTo(true)));
     }
+
+    @Test
+    public void compareOnFullNoDraw(){
+        Hand h1 = new Hand("Ah Td Ac Ad Th Qc Js");
+        Hand h2 = new Hand("Ts Tc Ac 3d Th Qc Js");
+        assertThat((h1.compare(h2))>0,is(equalTo(true)));
+    }
+
+//    @Test
+//    public void compareOnFullNoDraw(){
+//        Hand h1 = new Hand("Ah Td Ac Ad Th Qc Js");
+//        Hand h2 = new Hand("Ts Tc Ac Ad Th Qc Js");
+//        assertThat((h1.compare(h2))>0,is(equalTo(true)));
+//    }
 }
