@@ -14,8 +14,8 @@ public class Game {
     private ArrayList<Rank> ranks;
     private boolean[] winners;
 
-    public Game(String[] handsStr) {
-        hands = Arrays.stream(handsStr).map(Hand::new).collect(Collectors.toCollection(ArrayList::new));
+    public Game(ArrayList<String> handsStr) {
+        hands = handsStr.stream().map(Hand::new).collect(Collectors.toCollection(ArrayList::new));
         ranks = hands.stream().map(Hand::getScore).collect(Collectors.toCollection(ArrayList::new));
     }
 
@@ -23,7 +23,7 @@ public class Game {
         this(readFileFromFilename(filename));
     }
 
-    private static String[] readFileFromFilename(String filename) {
+    private static ArrayList<String> readFileFromFilename(String filename) {
         ArrayList<String> handStr = new ArrayList<>();
 
         try(BufferedReader br = new BufferedReader(new FileReader(filename))) {
@@ -39,12 +39,15 @@ public class Game {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        return handStr.toArray(String[]::new);
+        return handStr;
     }
 
     public ArrayList<Rank> getRanks(){
         return ranks;
+    }
+
+    public int getWinner(){
+        return 1;
     }
 
 
