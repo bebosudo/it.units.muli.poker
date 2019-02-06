@@ -389,6 +389,15 @@ public class HandTest {
         assertThat((h1.compare(h2))>0,is(equalTo(true)));
     }
 
+    @Test
+    public void compareOnThreeOfAKindCompleteDraw(){
+        Hand h1 = new Hand("3d 4h 4s Ad Kd 7c 4c");
+        Hand h2 = new Hand("6d 4h 4d As Ks 9c 4c");
+        assertThat(h1.compare(h2),is(equalTo(0)));
+    }
+
+
+
 
 
 }
