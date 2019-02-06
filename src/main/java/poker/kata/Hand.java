@@ -30,10 +30,14 @@ public class Hand {
         Pattern pat = Pattern.compile(reg);
         Matcher mat = pat.matcher(HandStr);
 
-        int i = 0;
+
         while (mat.find()) {
             cards.add(new Card(mat.group()));
-            i++;
+        }
+
+        if (cards.size() != 7) {
+            score = Rank.FOLD;
+            return;
         }
 
         setScore();
@@ -43,7 +47,7 @@ public class Hand {
         return cards.get(i);
     }
 
-    public ArrayList<Card> getCards(){
+    public ArrayList<Card> getCards() {
         return cards;
     }
 
@@ -148,12 +152,13 @@ public class Hand {
         Collections.sort(cards, Card.COMPARE_BY_SUIT);
     }
 
-    public boolean compareToCardsArray(Card[] other){
-        if(other.length != size()) {
+    public boolean compareToCardsArray(Card[] other) {
+        if (other.length != size()) {
             throw new ArrayIndexOutOfBoundsException("The two hands do not share the same size!");
-        }else{
+        } else {
+            // limit(5) is used to compare only first 5, no need to compare more
             return IntStream.range(0, other.length).mapToLong(i -> other[i].getFace()
-                    .compareTo(getCard(i).getFace())).allMatch(x -> x == 0);
+                    .compareTo(getCard(i).getFace())).limit(5).allMatch(x -> x == 0);
         }
     }
 
@@ -366,8 +371,8 @@ public class Hand {
     }
 
     public static void main(String[] args) {
-        Hand h = new Hand("8d 5d 8c Td 9h 4d Kd");
-        h.printCards();
+        Hand h = new Hand("8d 5d 8c Td 9h 4d 6c");
+        // h.printCards();
         System.out.println("\n");
 
 
