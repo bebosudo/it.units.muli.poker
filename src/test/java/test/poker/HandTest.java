@@ -304,4 +304,11 @@ public class HandTest {
         Hand h2 = new Hand("Kd Th 2s 3h 6h 8d 5h");
         assertThat(h1.compare(h2)>0,is(equalTo(true)));
     }
+
+    @Test
+    public void compareTwoHandsSameScoreDifferentSecondKicker(){
+        Hand h1 = new Hand("Kc 2s Ks 9d 4s 5d 6d");
+        Hand h2 = new Hand("Kd Kh 2d 3h 8h 9s 5h");
+        assertThat(h2.compare(h1)>0,is(equalTo(true)));
+    }
 }
