@@ -2,9 +2,9 @@ package test.poker;
 
 import org.junit.Test;
 import poker.kata.Game;
-import poker.kata.Hand;
 import poker.kata.Rank;
 
+import java.net.URL;
 import java.util.ArrayList;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -29,7 +29,7 @@ public class GameTests {
 
         Rank[] expRanks = {Rank.FULL_HOUSE, Rank.TWO_PAIRS, Rank.FOLD, Rank.FOLD, Rank.FLUSH, Rank.FOLD};
         ArrayList<Rank> ranks = g.getRanks();
-        for (int i = 0; i < s.length; i++) {
+        for (int i = 0; i < expRanks.length; i++) {
             assertThat(ranks.get(i), is(equalTo(expRanks[i])));
         }
     }
@@ -46,7 +46,7 @@ public class GameTests {
 
         Rank[] expRanks = {Rank.FLUSH, Rank.STRAIGHT, Rank.FOUR_OF_A_KIND};
         ArrayList<Rank> ranks = g.getRanks();
-        for (int i = 0; i < s.length; i++) {
+        for (int i = 0; i < expRanks.length; i++) {
             assertThat(ranks.get(i), is(equalTo(expRanks[i])));
         }
     }
@@ -66,10 +66,26 @@ public class GameTests {
 
         Rank[] expRanks = {Rank.STRAIGHT, Rank.THREE_OF_A_KIND, Rank.STRAIGHT, Rank.HIGH_CARD, Rank.PAIR, Rank.STRAIGHT};
         ArrayList<Rank> ranks = g.getRanks();
-        for (int i = 0; i < s.length; i++) {
+        for (int i = 0; i < expRanks.length; i++) {
             assertThat(ranks.get(i), is(equalTo(expRanks[i])));
         }
     }
+
+    @Test
+    public void ParsingTestFile1() {
+        // throws Exception
+
+        String filename = GameTests.class.getClassLoader().getResource("testGame1").getFile();
+
+        Game g = new Game(filename);
+
+        Rank[] expRanks = {Rank.PAIR, Rank.PAIR, Rank.PAIR, Rank.FOLD, Rank.FOLD, Rank.FLUSH};
+        ArrayList<Rank> ranks = g.getRanks();
+        for (int i = 0; i < expRanks.length; i++) {
+            assertThat(ranks.get(i), is(equalTo(expRanks[i])));
+        }
+    }
+
 
 
 }
