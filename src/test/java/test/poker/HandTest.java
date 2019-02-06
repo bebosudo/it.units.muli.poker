@@ -417,6 +417,20 @@ public class HandTest {
         assertThat(h1.compare(h2),is(equalTo(0)));
     }
 
+    @Test
+    public void compareOnStraightFlush(){
+        Hand h1 = new Hand("Ad Kd Td 3h Jd 2h Qd");
+        Hand h2 = new Hand("Ts 3s 3d 4h 9s As 2s");
+        assertThat((h1.compare(h2))>0,is(equalTo(true)));
+    }
+
+    @Test
+    public void compareOnStraightFlushSameScoreOneAceTo10OtherFiveToAce(){
+        Hand h1 = new Hand("Ad Kd Td 3h Jd 2h Qd");
+        Hand h2 = new Hand("Ah Th 3h 4h 7d 2h 5h");
+        assertThat((h1.compare(h2))>0,is(equalTo(true)));
+    }
+
 
 
 
