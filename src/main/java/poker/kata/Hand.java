@@ -30,7 +30,7 @@ public class Hand {
         Pattern pat = Pattern.compile(reg);
         Matcher mat = pat.matcher(HandStr);
 
-        
+
         while (mat.find()) {
             cards.add(new Card(mat.group()));
         }
@@ -173,8 +173,9 @@ public class Hand {
         if (other.length != size()) {
             throw new ArrayIndexOutOfBoundsException("The two hands do not share the same size!");
         } else {
+            // limit(5) is used to compare only first 5, no need to compare more
             return IntStream.range(0, other.length).mapToLong(i -> other[i].getFace()
-                    .compareTo(getCard(i).getFace())).allMatch(x -> x == 0);
+                    .compareTo(getCard(i).getFace())).limit(5).allMatch(x -> x == 0);
         }
     }
 
@@ -420,9 +421,6 @@ public class Hand {
 
     public void printCards() {
         cards.stream().forEach(Card::toString);
-//        for (int i = 0; i < 7; i++) {
-//            System.out.println(String.valueOf(i + 1) + ":  " + cards.get(i).getFace() + " of " + cards.get(i).getSuit());
-//        }
     }
 
     public static void main(String[] args) {
