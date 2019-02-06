@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.*;
+
 import static org.junit.Assert.assertThat;
 
 
@@ -272,6 +272,13 @@ public class HandTest {
         h = new Hand("Qh Kc");
         assertThat(h.getScore(), is(Rank.FOLD));
 
+    }
+
+    @Test
+    public void compareSimpleHands(){
+        Hand h1 = new Hand("Kc 9s Ks 9d 5s 5d 6d");
+        Hand h2 = new Hand("Kd Td 2s 3h 6h 8d 5h");
+        assertThat(h1.compare(h2), is(equalTo(1)));
     }
 
 }

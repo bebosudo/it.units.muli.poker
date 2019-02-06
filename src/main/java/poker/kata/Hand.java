@@ -64,37 +64,7 @@ public class Hand {
     }
 
     public int compare(Hand h) {
-        int r = 1;
-        switch (score) {
-            case HIGH_CARD:
-                r = compareHigh(h);
-                break;
-            case PAIR:
-                r = comparePair(h);
-                break;
-            case TWO_PAIRS:
-                r = compareDouble(h);
-                break;
-            case THREE_OF_A_KIND:
-                r = compareSet(h);
-                break;
-            case STRAIGHT:
-                r = compareStraight(h);
-                break;
-            case FLUSH:
-                r = compareFlush(h);
-                break;
-            case FULL_HOUSE:
-                r = compareFull(h);
-                break;
-            case FOUR_OF_A_KIND:
-                r = compareQuad(h);
-                break;
-            case STRAIGHT_FLUSH:
-                r = compareStraightFlush(h);
-                break;
-        }
-        return r;
+        return 1;
     }
 
     @Override
@@ -381,7 +351,7 @@ public class Hand {
         return false;
     }
 
-    // -1 this is smaller, 0 equals, 1 the other is better
+    /*// -1 this is smaller, 0 equals, 1 the other is better
     private int compareHigh(Hand h) {
         return 1;
     }
@@ -417,7 +387,7 @@ public class Hand {
     private int compareStraightFlush(Hand h) {
         return 1;
     }
-
+        */
 
     public void printCards() {
         cards.stream().forEach(Card::toString);
