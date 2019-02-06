@@ -382,6 +382,71 @@ public class HandTest {
         assertThat((h1.compare(h2))>0,is(equalTo(true)));
     }
 
+    @Test
+    public void compareOnThreeOfAKindSameScore(){
+        Hand h1 = new Hand("3d 4h 4s Ad Kd 9c 4c");
+        Hand h2 = new Hand("3d 4h 4d As Qs 9c 4c");
+        assertThat((h1.compare(h2))>0,is(equalTo(true)));
+    }
+
+    @Test
+    public void compareOnThreeOfAKindCompleteDraw(){
+        Hand h1 = new Hand("3d 4h 4s Ad Kd 7c 4c");
+        Hand h2 = new Hand("6d 4h 4d As Ks 9c 4c");
+        assertThat(h1.compare(h2),is(equalTo(0)));
+    }
+
+    @Test
+    public void compareOnFlush(){
+        Hand h1 = new Hand("2h Ah Td 3h Th 9h 7d");
+        Hand h2 = new Hand("As 2s 4d Qc Ah 3c 5h");
+        assertThat((h1.compare(h2))>0,is(equalTo(true)));
+    }
+
+    @Test
+    public void compareOnFlushSameScore(){
+        Hand h1 = new Hand("2h Ah Td 3h Th 9h 7d");
+        Hand h2 = new Hand("Ts 3s 3d 4h 8s As 2s");
+        assertThat((h1.compare(h2))>0,is(equalTo(true)));
+    }
+
+    @Test
+    public void compareOnFlushCompleteDraw(){
+        Hand h1 = new Hand("2h Ah Td 3h Th 9h 7d");
+        Hand h2 = new Hand("Ts 3s 3d 4h 9s As 2s");
+        assertThat(h1.compare(h2),is(equalTo(0)));
+    }
+
+    @Test
+    public void compareOnStraightFlush(){
+        Hand h1 = new Hand("Ad Kd Td 3h Jd 2h Qd");
+        Hand h2 = new Hand("Ts 3s 3d 4h 9s As 2s");
+        assertThat((h1.compare(h2))>0,is(equalTo(true)));
+    }
+
+    @Test
+    public void compareOnStraightFlushSameScoreOneAceTo10OtherFiveToAce(){
+        Hand h1 = new Hand("Ad Kd Td 3h Jd 2h Qd");
+        Hand h2 = new Hand("Ah Th 3h 4h 7d 2h 5h");
+        assertThat((h1.compare(h2))>0,is(equalTo(true)));
+    }
+
+    @Test
+    public void compareOnStraightFlushCompleteDraw(){
+        Hand h1 = new Hand("Ad Kd Td 3h Jd 2h Qd");
+        Hand h2 = new Hand("As Ks Ts 3h Js 2h Qs");
+        assertThat(h1.compare(h2),is(equalTo(0)));
+    }
+
+    @Test
+    public void compareThreeOfAKindWithFoldedHand(){
+        Hand h1 = new Hand("Ad Ah As 3h Jd 2h Qd");
+        Hand h2 = new Hand("Ah Th Kh Ad Ac");
+        assertThat((h1.compare(h2))>0,is(equalTo(true)));
+    }
+
+
+
 
 
 }
