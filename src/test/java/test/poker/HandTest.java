@@ -325,4 +325,11 @@ public class HandTest {
         Hand h2 = new Hand("Jd 6h Kd Td 4h Ah Qh");
         assertThat(h2.compare(h1),is(equalTo(0)));
     }
+
+    @Test
+    public void compareOnStraightAceNoDraw(){
+        Hand h1 = new Hand("Ac Ks Ts Qd 4s Jd 6d");
+        Hand h2 = new Hand("Jd 6h Kd Td 4h 9h Qh");
+        assertThat((h1.compare(h2))>0,is(equalTo(true)));
+    }
 }
