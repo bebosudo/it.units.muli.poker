@@ -15,6 +15,8 @@ public class Hand {
     private String original;
     private ArrayList<Card> cards;
     private Rank score;
+    private static final int MAX_HAND_SIZE = 7;
+    private static final int VALID_HAND_SIZE = 5;
 
     private static final int NO_GROUP = 0;
     private static final int FIND_PAIR = 2;
@@ -35,7 +37,7 @@ public class Hand {
             cards.add(new Card(mat.group()));
         }
 
-        if (cards.size() != 7) {
+        if (cards.size() != MAX_HAND_SIZE) {
             score = Rank.FOLD;
             return;
         }
@@ -71,7 +73,7 @@ public class Hand {
         }
         //if the scores are the same, I need to compare kickers
         //since the hands' cards are ordered, I can operate a pairwise comparison
-        for(int i=0; i<5; i++){
+        for(int i=0; i< VALID_HAND_SIZE; i++){
             int compareCards = this.getCard(i).getFace().compareTo(h.getCard(i).getFace());
             if(compareCards!=0) {
                 return compareCards;
@@ -158,7 +160,7 @@ public class Hand {
         } else {
             // limit(5) is used to compare only first 5, no need to compare more
             return IntStream.range(0, other.length).mapToLong(i -> other[i].getFace()
-                    .compareTo(getCard(i).getFace())).limit(5).allMatch(x -> x == 0);
+                    .compareTo(getCard(i).getFace())).limit(VALID_HAND_SIZE).allMatch(x -> x == 0);
         }
     }
 
@@ -246,7 +248,7 @@ public class Hand {
                         .collect(Collectors.toCollection(ArrayList::new));
 
         // There must be at least 5 unique cards to make a Straight.
-        if (partialCards.size() < 5) {
+        if (partialCards.size() < VALID_HAND_SIZE) {
             return false;
         }
 
@@ -257,7 +259,7 @@ public class Hand {
             if (partialCards.get(i).getFace().getValue() - partialCards.get(i + 4).getFace().getValue() == 4) {
 
                 // Overwrite the cards array with straight we just found.
-                for (int fillCardsArrayId = 0; fillCardsArrayId < 5; fillCardsArrayId++) {
+                for (int fillCardsArrayId = 0; fillCardsArrayId < VALID_HAND_SIZE; fillCardsArrayId++) {
                     // The card to pop in the temp array will be always the same, because at the
                     // previous iteration we removed its left.
                     cards.set(fillCardsArrayId, partialCards.remove(i));
@@ -266,7 +268,7 @@ public class Hand {
                 // Fill `cards' with the leftovers.
                 int cardsToRemove = partialCards.size();
                 for (int leftoversCardsId = 0; leftoversCardsId < cardsToRemove; leftoversCardsId++) {
-                    cards.set(leftoversCardsId + 5, partialCards.remove(0));
+                    cards.set(leftoversCardsId + VALID_HAND_SIZE, partialCards.remove(0));
                 }
 
                 return true;
@@ -287,7 +289,7 @@ public class Hand {
 
             // Fill `cards' with the leftovers.
             for (int leftoversCardsId = 0; leftoversCardsId < partialCards.size(); leftoversCardsId++) {
-                cards.set(leftoversCardsId + 5, partialCards.remove(0));
+                cards.set(leftoversCardsId + VALID_HAND_SIZE, partialCards.remove(0));
             }
 
             return true;
@@ -323,7 +325,7 @@ public class Hand {
         orderedCards.sort(Card.COMPARE_BY_RANK_DECR);
 
         // And push all the remaining cards.
-        for (int ii = 0; ii < 7; ii++) {
+        for (int ii = 0; ii < MAX_HAND_SIZE; ii++) {
             if (ii < i || ii > j) {
                 orderedCards.add(cards.get(ii));
             }
@@ -367,7 +369,7 @@ public class Hand {
     }
 
       public void printCards() {
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < MAX_HAND_SIZE; i++) {
             System.out.println(String.valueOf(i + 1) + ":  " + cards.get(i).getFace() + " of " + cards.get(i).getSuit());
         }
     }

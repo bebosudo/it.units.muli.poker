@@ -438,6 +438,13 @@ public class HandTest {
         assertThat(h1.compare(h2),is(equalTo(0)));
     }
 
+    @Test
+    public void compareThreeOfAKindWithFoldedHand(){
+        Hand h1 = new Hand("Ad Ah As 3h Jd 2h Qd");
+        Hand h2 = new Hand("Ah Th Kh Ad Ac");
+        assertThat((h1.compare(h2))>0,is(equalTo(true)));
+    }
+
 
 
 
