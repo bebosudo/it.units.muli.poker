@@ -13,6 +13,7 @@ import java.util.stream.IntStream;
 
 import static org.hamcrest.CoreMatchers.*;
 
+
 import static org.junit.Assert.assertThat;
 
 
@@ -257,10 +258,25 @@ public class HandTest {
     }
 
     @Test
-    public void compareSimpleHands(){
+    public void compareSimpleHandsFirstGreater(){
         Hand h1 = new Hand("Kc 9s Ks 9d 5s 5d 6d");
         Hand h2 = new Hand("Kd Td 2s 3h 6h 8d 5h");
-        assertThat(h1.compare(h2), is(equalTo(1)));
+        //assertThat(h1.compare(h2), is(equalTo(1)));
+        assertThat(h1.compare(h2)>0,is(equalTo(true)));
+    }
+
+    @Test
+    public void compareSimpleHandsSecondGreater(){
+        Hand h1 = new Hand("Kd Td 2s 3h 6h 8d 5h");
+        Hand h2 = new Hand("Kc 9s Ks 9d 5s 5d 6d");
+        assertThat(h1.compare(h2)>0,is(equalTo(false)));
+    }
+
+    @Test
+    public void compareTwoHandsSameScoreDifferentKicker(){
+        Hand h1 = new Hand("Kc 8s Ks 9d 4s 5d 6d");
+        Hand h2 = new Hand("Kd Kh 2s 3h 6h 8d 5h");
+        assertThat(h1.compare(h2)>0,is(equalTo(true)));
     }
 
 

@@ -60,7 +60,20 @@ public class Hand {
     }
 
     public int compare(Hand h) {
-        return 1;
+        int compareScores = this.getScore().compareTo(h.getScore());
+        //compareScores is !=0 if one of the two hands' score is larger than the other one
+        if(compareScores!=0){
+            return compareScores;
+        }
+        //if the scores are the same, I need to compare kickers
+        //since the hands' cards are ordered, I can operate a pairwise comparison
+        for(int i=0; i<5; i++){
+            int compareCards = this.getCard(i).getFace().compareTo(h.getCard(i).getFace());
+            if(compareCards!=0) {
+                return compareCards;
+            }
+        }
+        return 0;
     }
 
     @Override
@@ -346,45 +359,7 @@ public class Hand {
         return false;
     }
 
-    /*// -1 this is smaller, 0 equals, 1 the other is better
-    private int compareHigh(Hand h) {
-        return 1;
-    }
-
-    private int comparePair(Hand h) {
-        return 1;
-    }
-
-    private int compareDouble(Hand h) {
-        return 1;
-    }
-
-    private int compareSet(Hand h) {
-        return 1;
-    }
-
-    private int compareStraight(Hand h) {
-        return 1;
-    }
-
-    private int compareFlush(Hand h) {
-        return 1;
-    }
-
-    private int compareFull(Hand h) {
-        return 1;
-    }
-
-    private int compareQuad(Hand h) {
-        return 1;
-    }
-
-    private int compareStraightFlush(Hand h) {
-        return 1;
-    }
-        */
-
-    public void printCards() {
+      public void printCards() {
         for (int i = 0; i < 7; i++) {
             System.out.println(String.valueOf(i + 1) + ":  " + cards.get(i).getFace() + " of " + cards.get(i).getSuit());
         }
