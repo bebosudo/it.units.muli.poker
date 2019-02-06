@@ -208,14 +208,6 @@ public class HandTest {
         assertThat(h.compareToCardsArray(orderedCards), is(true));
     }
 
-    /*@Test
-    public void TestStraightOrderingWithRepeatingCards(){
-        Hand h = new Hand("6h 6c 7c 4s Kh 3s 5d");
-        Card[] orderedCards = {new Card("7c"), new Card("6h"), new Card("5d"), new Card("4s"), new Card("3s"), new Card("Kh"), new Card("6c")};
-
-        assertThat(h.compareToCardsArray(orderedCards), is(true));
-    }*/
-
     @Test
     public void TestPairOrdering(){
         Hand h = new Hand("9c 6c 7c 4s Kh 3s 7d");
