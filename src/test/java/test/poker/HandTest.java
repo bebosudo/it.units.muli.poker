@@ -410,6 +410,14 @@ public class HandTest {
         assertThat((h1.compare(h2))>0,is(equalTo(true)));
     }
 
+    @Test
+    public void compareOnFlushCompleteDraw(){
+        Hand h1 = new Hand("2h Ah Td 3h Th 9h 7d");
+        Hand h2 = new Hand("Ts 3s 3d 4h 9s As 2s");
+        assertThat(h1.compare(h2),is(equalTo(0)));
+    }
+
+
 
 
 
