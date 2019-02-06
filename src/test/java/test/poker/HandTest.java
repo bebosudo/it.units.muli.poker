@@ -353,4 +353,12 @@ public class HandTest {
         Hand h2 = new Hand("Ts Tc 3c Ad 6h Qc Js");
         assertThat((h1.compare(h2))>0,is(equalTo(true)));
     }
+
+    @Test
+    public void compareOnTwoPairsSameScore(){
+        Hand h1 = new Hand("9c Ah Ks Kd Td Tc 6d");
+        Hand h2 = new Hand("Ts Tc 9s 3d Ks Kc 2s");
+        assertThat((h1.compare(h2))>0,is(equalTo(true)));
+    }
+
 }
