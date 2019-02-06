@@ -361,4 +361,13 @@ public class HandTest {
         assertThat((h1.compare(h2))>0,is(equalTo(true)));
     }
 
+    @Test
+    public void compareOnTwoPairsCompleteDraw(){
+        Hand h1 = new Hand("9c Ah Ks Kd Td Tc 6d");
+        Hand h2 = new Hand("Ts Tc 9s Ad Ks Kc 2s");
+        assertThat(h1.compare(h2),is(equalTo(0)));
+    }
+
+
+
 }
