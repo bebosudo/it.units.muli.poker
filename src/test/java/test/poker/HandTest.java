@@ -201,6 +201,13 @@ public class HandTest {
     }
 
     @Test
+    public void TestFlushClubs2() {
+        Hand h = new Hand("9c 5c 6c 7c 3c Kh 3s\n"
+        );
+        assertThat(h.getScore(), is(equalTo(Rank.FLUSH)));
+    }
+
+    @Test
     public void TestStraightOrdering() {
         Hand h = new Hand("9c 6c 7c 4s Kh 3s 5d");
         Card[] orderedCards = {new Card("7c"), new Card("6c"), new Card("5d"), new Card("4s"), new Card("3s"), new Card("Kh"), new Card("9c")};
