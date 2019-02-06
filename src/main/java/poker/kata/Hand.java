@@ -250,25 +250,7 @@ public class Hand {
             return false;
         }
 
-        // Treat the Ace separately: check if there's a straight with 'A .. 5 4 3 2'.
-        if (partialCards.get(0).getFace() == CardFace.ACE &&
-                partialCards.get(partialCards.size() - 1).getFace() == CardFace.TWO &&
-                partialCards.get(partialCards.size() - 4).getFace() == CardFace.FIVE) {
 
-            for (int lastCardsId = 0; lastCardsId < 4; lastCardsId++) {
-                cards.set(3 - lastCardsId, partialCards.remove(partialCards.size() - 1));
-            }
-
-            // Pop out the Ace to the last position of the straight.
-            cards.set(4, partialCards.remove(0));
-
-            // Fill `cards' with the leftovers.
-            for (int leftoversCardsId = 0; leftoversCardsId < partialCards.size(); leftoversCardsId++) {
-                cards.set(leftoversCardsId + 5, partialCards.remove(0));
-            }
-
-            return true;
-        }
 
         // Check if the first three quintets are a Straight.
         for (int i = 0; i < partialCards.size() - 4; i++) {
@@ -289,6 +271,26 @@ public class Hand {
 
                 return true;
             }
+        }
+
+        // Treat the Ace separately: check if there's a straight with 'A .. 5 4 3 2'.
+        if (partialCards.get(0).getFace() == CardFace.ACE &&
+                partialCards.get(partialCards.size() - 1).getFace() == CardFace.TWO &&
+                partialCards.get(partialCards.size() - 4).getFace() == CardFace.FIVE) {
+
+            for (int lastCardsId = 0; lastCardsId < 4; lastCardsId++) {
+                cards.set(3 - lastCardsId, partialCards.remove(partialCards.size() - 1));
+            }
+
+            // Pop out the Ace to the last position of the straight.
+            cards.set(4, partialCards.remove(0));
+
+            // Fill `cards' with the leftovers.
+            for (int leftoversCardsId = 0; leftoversCardsId < partialCards.size(); leftoversCardsId++) {
+                cards.set(leftoversCardsId + 5, partialCards.remove(0));
+            }
+
+            return true;
         }
 
         return false;
