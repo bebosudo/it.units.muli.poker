@@ -15,9 +15,9 @@ public class Hand {
     private String original;
     private ArrayList<Card> cards;
     private Rank score;
+
     private static final int MAX_HAND_SIZE = 7;
     private static final int VALID_HAND_SIZE = 5;
-
     private static final int NO_GROUP = 0;
     private static final int FIND_PAIR = 2;
     private static final int FIND_SET = 3;
@@ -164,7 +164,7 @@ public class Hand {
         }
     }
 
-    private void searchForGroupOfCardsThenPop(ArrayList<Card> arrayFrom, ArrayList<Card> arrayTo, int groupLength) {
+    private void searchForGroupOfCardsInArrayThenPopGroup(ArrayList<Card> arrayFrom, ArrayList<Card> arrayTo, int groupLength) {
         //search into arrayFrom if it can find a given group of cards, then it pops the group from arrayFrom
         //and pushes it into arrayTo
         for (int i = 0; i < arrayFrom.size() - groupLength + 1; i++) {
@@ -190,22 +190,26 @@ public class Hand {
         return true;
     }
 
-    private boolean findGroupsIntoOrderedCards(int findGroup1, int findGroup2) {
-        int groupLarger = Math.max(findGroup1, findGroup2);
-        int groupSmaller = Math.min(findGroup1, findGroup2);
+    private boolean foundGroupIntoArray(ArrayList<Card> arr, int groupSize){
+        return arr.size() == groupSize;
+    }
+
+    private boolean findGroupsIntoOrderedCards(int lengthGroup1, int lengthGroup2) {
+        int largerGroupSize = Math.max(lengthGroup1, lengthGroup2);
+        int smallerGroupSize = Math.min(lengthGroup1, lengthGroup2);
 
         ArrayList<Card> cardsBackup = cards.stream().collect(Collectors.toCollection(ArrayList::new));
-        //This arraylist will store new cards ordered by (groupLarger + groupSmaller + everything else)
+        //This arraylist will store new cards ordered by (largerGroupSize + smallerGroupSize + everything else)
         ArrayList<Card> orderedCards = new ArrayList();
 
-        searchForGroupOfCardsThenPop(cards, orderedCards, groupLarger);
+        searchForGroupOfCardsInArrayThenPopGroup(cards, orderedCards, largerGroupSize);
 
         //if the new arraylist has the size of the group, it means it has found the desided group, then proceeds
         //on to the next group
-        if (orderedCards.size() == groupLarger) {
-            if (groupSmaller > 0) {
-                searchForGroupOfCardsThenPop(cards, orderedCards, groupSmaller);
-                if (orderedCards.size() == groupLarger + groupSmaller) {
+        if (foundGroupIntoArray(orderedCards, largerGroupSize)) {
+            if (smallerGroupSize > 0) {
+                searchForGroupOfCardsInArrayThenPopGroup(cards, orderedCards, smallerGroupSize);
+                if (orderedCards.size() == largerGroupSize + smallerGroupSize) {
                     return switchCardArraysAndReturnTrue(orderedCards);
 
                 } else {
