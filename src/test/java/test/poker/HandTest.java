@@ -249,11 +249,19 @@ public class HandTest {
     }
 
     @Test
-    public void TestWrongOrderingForQuad(){
+    public void TestWrongOrderingForQuad() {
         Hand h = new Hand("Qh Kc 7c Qs Kh Qc Qd");
         Card[] orderedCards = {new Card("7c"), new Card("Qs"), new Card("Qd"), new Card("Qc"), new Card("Kc"), new Card("Kh"), new Card("Qh")};
 
         assertThat(h.compareToCardsArray(orderedCards), is(false));
+    }
+
+
+    @Test
+    public void TestLessThanSevenCardsGetFoldRank(){
+        Hand h = new Hand("Qh Kc 7c Qs Qc Qd");
+
+        assertThat(h.getScore(), is(Rank.FOLD));
     }
 
 }
