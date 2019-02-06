@@ -396,6 +396,13 @@ public class HandTest {
         assertThat(h1.compare(h2),is(equalTo(0)));
     }
 
+    @Test
+    public void compareOnFlush(){
+        Hand h1 = new Hand("2h Ah Td 3h Th 9h 7d");
+        Hand h2 = new Hand("As 2s 4d Qc Ah 3c 5h");
+        assertThat((h1.compare(h2))>0,is(equalTo(true)));
+    }
+
 
 
 
