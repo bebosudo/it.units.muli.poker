@@ -318,4 +318,11 @@ public class HandTest {
         Hand h2 = new Hand("2d 6h Kd 3d 4h Ah 5h");
         assertThat(h2.compare(h1),is(equalTo(0)));
     }
+
+    @Test
+    public void compareCompleteDrawOnStraightAceToTen(){
+        Hand h1 = new Hand("Ac Ks Ts Qd 4s Jd 6d");
+        Hand h2 = new Hand("Jd 6h Kd Td 4h Ah Qh");
+        assertThat(h2.compare(h1),is(equalTo(0)));
+    }
 }
