@@ -64,7 +64,20 @@ public class Hand {
     }
 
     public int compare(Hand h) {
-        return 1;
+        int compareScores = this.getScore().compareTo(h.getScore());
+        //compareScores is !=0 if one of the two hands' score is larger than the other one
+        if(compareScores!=0){
+            return compareScores;
+        }
+        //if the scores are the same, I need to compare kickers
+        //since the hands' cards are ordered, I can operate a pairwise comparison
+        for(int i=0; i<5; i++){
+            int compareCards = this.getCard(i).getFace().compareTo(h.getCard(i).getFace());
+            if(compareCards!=0) {
+                return compareCards;
+            }
+        }
+        return 0;
     }
 
     @Override
@@ -237,25 +250,7 @@ public class Hand {
             return false;
         }
 
-        // Treat the Ace separately: check if there's a straight with 'A .. 5 4 3 2'.
-        if (partialCards.get(0).getFace() == CardFace.ACE &&
-                partialCards.get(partialCards.size() - 1).getFace() == CardFace.TWO &&
-                partialCards.get(partialCards.size() - 4).getFace() == CardFace.FIVE) {
 
-            for (int lastCardsId = 0; lastCardsId < 4; lastCardsId++) {
-                cards.set(3 - lastCardsId, partialCards.remove(partialCards.size() - 1));
-            }
-
-            // Pop out the Ace to the last position of the straight.
-            cards.set(4, partialCards.remove(0));
-
-            // Fill `cards' with the leftovers.
-            for (int leftoversCardsId = 0; leftoversCardsId < partialCards.size(); leftoversCardsId++) {
-                cards.set(leftoversCardsId + 5, partialCards.remove(0));
-            }
-
-            return true;
-        }
 
         // Check if the first three quintets are a Straight.
         for (int i = 0; i < partialCards.size() - 4; i++) {
@@ -276,6 +271,26 @@ public class Hand {
 
                 return true;
             }
+        }
+
+        // Treat the Ace separately: check if there's a straight with 'A .. 5 4 3 2'.
+        if (partialCards.get(0).getFace() == CardFace.ACE &&
+                partialCards.get(partialCards.size() - 1).getFace() == CardFace.TWO &&
+                partialCards.get(partialCards.size() - 4).getFace() == CardFace.FIVE) {
+
+            for (int lastCardsId = 0; lastCardsId < 4; lastCardsId++) {
+                cards.set(3 - lastCardsId, partialCards.remove(partialCards.size() - 1));
+            }
+
+            // Pop out the Ace to the last position of the straight.
+            cards.set(4, partialCards.remove(0));
+
+            // Fill `cards' with the leftovers.
+            for (int leftoversCardsId = 0; leftoversCardsId < partialCards.size(); leftoversCardsId++) {
+                cards.set(leftoversCardsId + 5, partialCards.remove(0));
+            }
+
+            return true;
         }
 
         return false;
@@ -341,7 +356,7 @@ public class Hand {
             // many same-suit cards there are more than the 5 detected by the flush.
             int sameSuitIndex = 4;
             while (cards.get(0).getSuit().equals(cards.get(sameSuitIndex + 1).getSuit())) {
-                sameSuitIndex++;
+                    sameSuitIndex++;
             }
 
             // The index is 1 less than the Number of same-suits.
@@ -351,46 +366,10 @@ public class Hand {
         return false;
     }
 
-    /*// -1 this is smaller, 0 equals, 1 the other is better
-    private int compareHigh(Hand h) {
-        return 1;
-    }
-
-    private int comparePair(Hand h) {
-        return 1;
-    }
-
-    private int compareDouble(Hand h) {
-        return 1;
-    }
-
-    private int compareSet(Hand h) {
-        return 1;
-    }
-
-    private int compareStraight(Hand h) {
-        return 1;
-    }
-
-    private int compareFlush(Hand h) {
-        return 1;
-    }
-
-    private int compareFull(Hand h) {
-        return 1;
-    }
-
-    private int compareQuad(Hand h) {
-        return 1;
-    }
-
-    private int compareStraightFlush(Hand h) {
-        return 1;
-    }
-        */
-
-    public void printCards() {
-        cards.stream().forEach(Card::toString);
+      public void printCards() {
+        for (int i = 0; i < 7; i++) {
+            System.out.println(String.valueOf(i + 1) + ":  " + cards.get(i).getFace() + " of " + cards.get(i).getSuit());
+        }
     }
 
     public static void main(String[] args) {

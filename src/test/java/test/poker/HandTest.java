@@ -89,6 +89,7 @@ public class HandTest {
     }
 
 
+
     @Test
     public void TestFull() {
         Hand h = new Hand("Kd 2d 3h Kh 2s 7c Ks");
@@ -139,6 +140,7 @@ public class HandTest {
         Hand h = new Hand("Kd Ac Ad Td Jd Ah Qc");
         assertThat(h.getScore(), is(equalTo(Rank.STRAIGHT)));
     }
+
 
 
     @Test
@@ -282,10 +284,104 @@ public class HandTest {
     }
 
     @Test
-    public void compareSimpleHands(){
+    public void compareSimpleHandsFirstGreater(){
         Hand h1 = new Hand("Kc 9s Ks 9d 5s 5d 6d");
         Hand h2 = new Hand("Kd Td 2s 3h 6h 8d 5h");
-        assertThat(h1.compare(h2), is(equalTo(1)));
+        //assertThat(h1.compare(h2), is(equalTo(1)));
+        assertThat(h1.compare(h2)>0,is(equalTo(true)));
     }
+
+    @Test
+    public void compareSimpleHandsSecondGreater(){
+        Hand h1 = new Hand("Kd Td 2s 3h 6h 8d 5h");
+        Hand h2 = new Hand("Kc 9s Ks 9d 5s 5d 6d");
+        assertThat(h1.compare(h2)>0,is(equalTo(false)));
+    }
+
+    @Test
+    public void compareTwoHandsSameScoreDifferentKicker(){
+        Hand h1 = new Hand("Kc 8s Ks 9d 4s 5d 6d");
+        Hand h2 = new Hand("Kd Kh 2s 3h 6h 8d 5h");
+        assertThat(h1.compare(h2)>0,is(equalTo(true)));
+    }
+
+    @Test
+    public void compareTwoHandsHighCardsOnly(){
+        Hand h1 = new Hand("Kc 8s As 9d 4s 5d 6d");
+        Hand h2 = new Hand("Kd Th 2s 3h 6h 8d 5h");
+        assertThat(h1.compare(h2)>0,is(equalTo(true)));
+    }
+
+    @Test
+    public void compareTwoHandsSameScoreDifferentSecondKicker(){
+        Hand h1 = new Hand("Kc 2s Ks 9d 4s 5d 6d");
+        Hand h2 = new Hand("Kd Kh 2d 3h 8h 9s 5h");
+        assertThat(h2.compare(h1)>0,is(equalTo(true)));
+    }
+
+    @Test
+    public void compareCompleteDrawOnStraight(){
+        Hand h1 = new Hand("2c 2s 3s 9d 4s 5d 6d");
+        Hand h2 = new Hand("2d 6h Kd 3d 4h Ah 5h");
+        assertThat(h2.compare(h1),is(equalTo(0)));
+    }
+
+    @Test
+    public void compareCompleteDrawOnStraightAceToTen(){
+        Hand h1 = new Hand("Ac Ks Ts Qd 4s Jd 6d");
+        Hand h2 = new Hand("Jd 6h Kd Td 4h Ah Qh");
+        assertThat(h2.compare(h1),is(equalTo(0)));
+    }
+
+    @Test
+    public void compareOnStraightAceNoDraw(){
+        Hand h1 = new Hand("Ac Ks Ts Qd 4s Jd 6d");
+        Hand h2 = new Hand("Jd 6h Kd Td 4h 9h Qh");
+        assertThat((h1.compare(h2))>0,is(equalTo(true)));
+    }
+
+    @Test
+    public void compareOnFullNoSameScore(){
+        Hand h1 = new Hand("Ah Td Ac Ad Th Qc Js");
+        Hand h2 = new Hand("Ts Tc Ac 3d Th Qc Js");
+        assertThat((h1.compare(h2))>0,is(equalTo(true)));
+    }
+
+    @Test
+    public void compareOnFullSameScore(){
+        Hand h1 = new Hand("Ah Td Ac Ad Th Qc Js");
+        Hand h2 = new Hand("Ts Tc Ac Ad Th Qc Js");
+        assertThat((h1.compare(h2))>0,is(equalTo(true)));
+    }
+
+    @Test
+    public void compareOnTwoPairs(){
+        Hand h1 = new Hand("9c Ah Ks Kd 9d 3c 6d");
+        Hand h2 = new Hand("Ts Tc 3c Ad 6h Qc Js");
+        assertThat((h1.compare(h2))>0,is(equalTo(true)));
+    }
+
+    @Test
+    public void compareOnTwoPairsSameScore(){
+        Hand h1 = new Hand("9c Ah Ks Kd Td Tc 6d");
+        Hand h2 = new Hand("Ts Tc 9s 3d Ks Kc 2s");
+        assertThat((h1.compare(h2))>0,is(equalTo(true)));
+    }
+
+    @Test
+    public void compareOnTwoPairsCompleteDraw(){
+        Hand h1 = new Hand("9c Ah Ks Kd Td Tc 6d");
+        Hand h2 = new Hand("Ts Tc 9s Ad Ks Kc 2s");
+        assertThat(h1.compare(h2),is(equalTo(0)));
+    }
+
+    @Test
+    public void compareOnThreeOfAKind(){
+        Hand h1 = new Hand("Kc Ah Ks Kd 9d 3c 6d");
+        Hand h2 = new Hand("Ts Tc 3c Ad Ah Qc Js");
+        assertThat((h1.compare(h2))>0,is(equalTo(true)));
+    }
+
+
 
 }
