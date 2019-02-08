@@ -108,6 +108,17 @@ public class GameTests {
 
     }
 
+    @Test
+    public void getWinnerFromThreeHandsTwoWithSameScore(){
+        Game g = createSampleGameFromArrayOfStrings(new String[] {
+                "2h 2d 6c 7c 3c Kh 3s\n",
+                "6d Qs 6c 7c 3c Kh 3s\n",
+                "As 5c 6c 7c 3c Kh 3s\n"
+        });
+
+        assertThat(g.getWinner(),is(equalTo(1)));
+    }
+
 
 
 }

@@ -10,6 +10,7 @@ import java.util.Comparator;
 import java.util.IntSummaryStatistics;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class Game {
 
@@ -50,11 +51,34 @@ public class Game {
     }
 
     public int getWinner(){
-        return IntStream.range(0, ranks.size())
+        Rank maxScore = ranks.stream().max(Comparator.comparing(Rank::getValue)).get();
+
+        int[] bestHandsIndices =  IntStream.range(0, ranks.size())
+                                    .filter(i -> ranks.get(i).equals(maxScore))
+                                    .toArray();
+
+        if(bestHandsIndices.length == 0) {
+            return -1;
+        }
+        if(bestHandsIndices.length == 1){
+            return bestHandsIndices[0];
+        }
+
+
+        return Arrays.stream(bestHandsIndices)
                 .boxed()
-                .max(Comparator.comparing(ranks::get))
+                .sorted((index1, index2) -> - hands.get(index1).compare(hands.get(index2)))
+                .findFirst()
                 .get();
-        //ranks.stream().max(Comparator.comparing(Rank::getValue));
+
+        /*for(int handIndex1 = 0; handIndex1<  bestHandsIndices.length - 1; handIndex1++){
+            for(int handIndex2 = handIndex1 + 1; handIndex2 < bestHandsIndices.length; handIndex2++){
+                if(hands.get(handIndex1).compare(hands.get(handIndex2))>0){
+                    int temp =
+                }
+            }
+        }*/
+
     }
 
 
