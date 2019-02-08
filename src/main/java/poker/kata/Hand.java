@@ -65,7 +65,7 @@ public class Hand {
         return cards.size();
     }
 
-    public int compare(Hand h) {
+    public int compareTo(Hand h) {
         int compareScores = this.getScore().compareTo(h.getScore());
         //compareScores is !=0 if one of the two hands' score is larger than the other one
         if(compareScores!=0){

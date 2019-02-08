@@ -50,6 +50,12 @@ public class Game {
         return ranks;
     }
 
+    private Stream<Integer> sortIndicesByComparingHands(int[] indicesToCompare){
+        return Arrays.stream(indicesToCompare)
+                .boxed()
+                .sorted((index1, index2) -> - hands.get(index1).compareTo(hands.get(index2)));
+    }
+
     public int getWinner(){
         Rank maxScore = ranks.stream().max(Comparator.comparing(Rank::getValue)).get();
 
@@ -64,20 +70,8 @@ public class Game {
             return bestHandsIndices[0];
         }
 
+        return sortIndicesByComparingHands(bestHandsIndices).findFirst().get();
 
-        return Arrays.stream(bestHandsIndices)
-                .boxed()
-                .sorted((index1, index2) -> - hands.get(index1).compare(hands.get(index2)))
-                .findFirst()
-                .get();
-
-        /*for(int handIndex1 = 0; handIndex1<  bestHandsIndices.length - 1; handIndex1++){
-            for(int handIndex2 = handIndex1 + 1; handIndex2 < bestHandsIndices.length; handIndex2++){
-                if(hands.get(handIndex1).compare(hands.get(handIndex2))>0){
-                    int temp =
-                }
-            }
-        }*/
 
     }
 
