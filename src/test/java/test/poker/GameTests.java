@@ -119,6 +119,17 @@ public class GameTests {
         assertThat(g.getWinner(),is(equalTo(1)));
     }
 
+    @Test
+    public void getWinnerFromThreeHandsTwoWithSameRankDifferentKickers(){
+        Game g = createSampleGameFromArrayOfStrings(new String[] {
+                "6s 2d 6c 7c 3c Kh 3s\n",
+                "6d Ah 6c 7c 3c Kh 3s\n",
+                "As 5c 6c 7c 3c Kh 3s\n"
+        });
+
+        assertThat(g.getWinner(),is(equalTo(1)));
+    }
+
 
 
 }
