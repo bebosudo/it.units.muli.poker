@@ -6,7 +6,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.IntSummaryStatistics;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Game {
 
@@ -47,7 +50,11 @@ public class Game {
     }
 
     public int getWinner(){
-        return 1;
+        return IntStream.range(0, ranks.size())
+                .boxed()
+                .max(Comparator.comparing(ranks::get))
+                .get();
+        //ranks.stream().max(Comparator.comparing(Rank::getValue));
     }
 
 
