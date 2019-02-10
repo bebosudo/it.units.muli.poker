@@ -142,10 +142,6 @@ public class Hand {
     }
 
 
-    private void sortByRank() {
-        Collections.sort(cards, Card.COMPARE_BY_RANK);
-    }
-
     private void sortByRankDecreasing() {
         Collections.sort(cards, Card.COMPARE_BY_RANK_DECR);
     }
@@ -342,8 +338,6 @@ public class Hand {
 
     private boolean orderByFull() {
 
-        // after sorting the pair can be in front 22444 or after 44455
-        // write a function that put the tris in front of it (useful also for compareFull() )
         this.sortByRankDecreasing();
 
         return findGroupsIntoOrderedCards(FIND_SET, FIND_PAIR);
@@ -372,24 +366,12 @@ public class Hand {
         return false;
     }
 
-      public void printCards() {
-        for (int i = 0; i < MAX_HAND_SIZE; i++) {
-            System.out.println(String.valueOf(i + 1) + ":  " + cards.get(i).getFace() + " of " + cards.get(i).getSuit());
-        }
-    }
+
 
     public static void main(String[] args) {
         Hand h = new Hand("8d 5d 8c Td 9h 4d 6c");
         // h.printCards();
         System.out.println("\n");
 
-
-//        h.sortBySuit();
-//        h.printCards();
-//        System.out.println("\n");
-//        System.out.println("\n");
-//        System.out.println(h.isPair());
-//        h.setScore();
-//        System.out.println(h.getScore());
     }
 }
