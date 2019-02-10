@@ -15,7 +15,7 @@ import static org.junit.Assert.assertThat;
 public class GameTests {
 
     private Game createSampleGameFromArrayOfStrings(String[] handsStrings){
-        ArrayList<String> s = new ArrayList(Arrays.asList(handsStrings));
+        ArrayList<String> s = new ArrayList<>(Arrays.asList(handsStrings));
         return new Game(s);
     }
 
@@ -74,7 +74,7 @@ public class GameTests {
     public void ParsingTestFile1() {
         // throws Exception
 
-        String filename = GameTests.class.getClassLoader().getResource("testGame1").getFile();
+        URL filename = GameTests.class.getClassLoader().getResource("testGame1");
 
         Game g = new Game(filename);
 

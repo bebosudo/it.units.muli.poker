@@ -12,6 +12,9 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import java.net.URL;
+
+
 public class Game {
 
     private ArrayList<Hand> hands;
@@ -23,21 +26,20 @@ public class Game {
         ranks = hands.stream().map(Hand::getScore).collect(Collectors.toCollection(ArrayList::new));
     }
 
-    public Game(String filename){
-        this(readFileFromFilename(filename));
+    public Game(URL filename) {
+        this(readFileFromFilename(filename.getFile()));
     }
 
     private static ArrayList<String> readFileFromFilename(String filename) {
         ArrayList<String> handStr = new ArrayList<>();
 
-        try(BufferedReader br = new BufferedReader(new FileReader(filename))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
             String line = br.readLine();
-            while(line != null){
+            while (line != null) {
                 handStr.add(line);
                 line = br.readLine();
             }
-        }
-        catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             System.out.println("\n\nFile '" + filename + "' not found. Exiting program now.\n\n");
             System.exit(2);
         } catch (IOException e) {
@@ -46,34 +48,30 @@ public class Game {
         return handStr;
     }
 
-    public ArrayList<Rank> getRanks(){
+    public ArrayList<Rank> getRanks() {
         return ranks;
     }
 
-    private Stream<Integer> sortIndicesByComparingHands(int[] indicesToCompare){
+    private Stream<Integer> sortIndicesByComparingHands(int[] indicesToCompare) {
         return Arrays.stream(indicesToCompare)
                 .boxed()
-                .sorted((index1, index2) -> - hands.get(index1).compareTo(hands.get(index2)));
+                .sorted((index1, index2) -> -hands.get(index1).compareTo(hands.get(index2)));
     }
 
-    public int getWinner(){
+    public int getWinner() {
         Rank maxScore = ranks.stream().max(Comparator.comparing(Rank::getValue)).get();
 
-        int[] bestHandsIndices =  IntStream.range(0, ranks.size())
-                                    .filter(i -> ranks.get(i).equals(maxScore))
-                                    .toArray();
+        int[] bestHandsIndices = IntStream.range(0, ranks.size())
+                .filter(i -> ranks.get(i).equals(maxScore))
+                .toArray();
 
-        if(bestHandsIndices.length == 0) {
+        if (bestHandsIndices.length == 0) {
             return -1;
-        }
-        if(bestHandsIndices.length == 1){
+        } else if (bestHandsIndices.length == 1) {
             return bestHandsIndices[0];
         }
 
         return sortIndicesByComparingHands(bestHandsIndices).findFirst().get();
-
-
     }
-
 
 }
