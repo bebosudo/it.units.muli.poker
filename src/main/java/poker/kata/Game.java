@@ -58,20 +58,20 @@ public class Game {
                 .sorted((index1, index2) -> -hands.get(index1).compareTo(hands.get(index2)));
     }
 
-    public int getWinner() {
+    public int[] getWinners() {
         Rank maxScore = ranks.stream().max(Comparator.comparing(Rank::getValue)).get();
 
         int[] bestHandsIndices = IntStream.range(0, ranks.size())
                 .filter(i -> ranks.get(i).equals(maxScore))
                 .toArray();
 
-        if (bestHandsIndices.length == 0) {
-            return -1;
-        } else if (bestHandsIndices.length == 1) {
-            return bestHandsIndices[0];
+        if (bestHandsIndices.length == 0 || bestHandsIndices.length == 1) {
+            return bestHandsIndices;
         }
 
-        return sortIndicesByComparingHands(bestHandsIndices).findFirst().get();
+        return sortIndicesByComparingHands(bestHandsIndices)
+                .mapToInt(Integer::intValue)
+                .toArray();
     }
 
 }
