@@ -61,6 +61,10 @@ public class Hand {
         return score;
     }
 
+    public String printScore(){
+        return "";
+    }
+
     public int size() {
         return cards.size();
     }

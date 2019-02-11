@@ -441,6 +441,12 @@ public class HandTest {
         assertThat((h1.compareTo(h2))>0,is(equalTo(true)));
     }
 
+    @Test
+    public void printScoreFold(){
+        Hand h = new Hand("Ah Th Kh Ad Ac");
+        assertThat(h.printScore(),is(equalTo("")));
+    }
+
 
 
 
