@@ -143,7 +143,7 @@ public class Hand {
 
 
     private void sortByRankDecreasing() {
-        Collections.sort(cards, Card.COMPARE_BY_RANK_DECR);
+        Collections.sort(cards, Card.COMPARE_BY_FACE_DECR);
     }
 
     private void sortBySuit() {
@@ -243,7 +243,7 @@ public class Hand {
         ArrayList<Card> partialCards =
                 cards.stream()
                         .limit(straightUpToNumber)
-                        .sorted(Card.COMPARE_BY_RANK_DECR)
+                        .sorted(Card.COMPARE_BY_FACE_DECR)
                         .filter(Utils.distinctByKey(Card::getFace))
                         .collect(Collectors.toCollection(ArrayList::new));
 
@@ -322,7 +322,7 @@ public class Hand {
         }
 
         // Sort the cards that are part of the flush.
-        orderedCards.sort(Card.COMPARE_BY_RANK_DECR);
+        orderedCards.sort(Card.COMPARE_BY_FACE_DECR);
 
         // And push all the remaining cards.
         for (int ii = 0; ii < MAX_HAND_SIZE; ii++) {

@@ -8,11 +8,11 @@ public class Card {
     private CardSuit suit;
 
     public Card(String card) {
-        char rankChar = card.charAt(0);
+        char faceChar = card.charAt(0);
         char suitChar = card.charAt(1);
 
         // TODO: add exceptions in defaults?
-        switch (rankChar) {
+        switch (faceChar) {
             case 'A':
             case 'a':
                 face = CardFace.ACE;
@@ -109,14 +109,14 @@ public class Card {
                 '}';
     }
 
-    public static Comparator<Card> COMPARE_BY_RANK = new Comparator<Card>() {
+    public static Comparator<Card> COMPARE_BY_FACE = new Comparator<Card>() {
         @Override
         public int compare(Card o1, Card o2) {
             return o1.face.compareTo(o2.face);
         }
     };
 
-    public static Comparator<Card> COMPARE_BY_RANK_DECR = new Comparator<Card>() {
+    public static Comparator<Card> COMPARE_BY_FACE_DECR = new Comparator<Card>() {
         @Override
         public int compare(Card o1, Card o2) {
             return o2.face.compareTo(o1.face);
@@ -132,4 +132,3 @@ public class Card {
 
 
 }
-
