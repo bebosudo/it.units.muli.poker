@@ -77,11 +77,9 @@ public class Game {
 
     public void print(){
 
-        System.out.println(this.hands.get(0).getOriginal());
+        ArrayList<String> players = hands.stream().map(x->x.getOriginal() + " " + x.printScore()).collect(Collectors.toCollection(ArrayList::new));
 
+        players.stream().forEach(System.out::println);
 
     }
-
-
-
 }
