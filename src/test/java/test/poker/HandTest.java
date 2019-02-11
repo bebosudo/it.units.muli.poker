@@ -453,6 +453,12 @@ public class HandTest {
         assertThat(h.printScore(),is(equalTo("Pair")));
     }
 
+    @Test
+    public void printFullHouse(){
+        Hand h = new Hand("Kc 9s Ks Kd 9d 3c 6d");
+        assertThat(h.printScore(),is(equalTo("Full House")));
+    }
+
 
 
 
