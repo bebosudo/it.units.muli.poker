@@ -53,15 +53,30 @@ public class GamePrintTest {
     public void printMultiPlayers(){
         Game g = createSampleGameFromArrayOfStrings(new String[]{
                 "6d 2h 6h 2s 3d Qh 4s\n",
-                "As 5c 6c 7c 3c Kh 3s\n",
-                "6s 7d 6c 2c 3c Jh Ts\n",
+                "Js 3c 6h 2s 3d Qh 4s\n",
+                "6s 7d 6h 2s 3d Qh 4s\n",
         });
 
         g.print();
 
         assertThat(outContent.toString(), is(equalTo("6d 2h 6h 2s 3d Qh 4s Two Pairs (winner)\n" +
-                                                             "As 5c 6c 7c 3c Kh 3s Pair\n" +
-                                                             "6s 7d 6c 2c 3c Jh Ts Pair\n")));
+                                                             "Js 3c 6h 2s 3d Qh 4s Pair\n" +
+                                                             "6s 7d 6h 2s 3d Qh 4s Pair\n")));
+    }
+
+    @Test
+    public void printMultiPlayersTwoWinners(){
+        Game g = createSampleGameFromArrayOfStrings(new String[]{
+                "6d 2h 6h 2s 3d Qh 4s\n",
+                "Js 3c 6h 2s 3d Qh 4s\n",
+                "6s 2d 6h 2s 3d Qh 4s\n",
+        });
+
+        g.print();
+
+        assertThat(outContent.toString(), is(equalTo("6d 2h 6h 2s 3d Qh 4s Two Pairs (winner)\n" +
+                                                             "Js 3c 6h 2s 3d Qh 4s Pair\n" +
+                                                             "6s 2d 6h 2s 3d Qh 4s Two Pairs (winner)\n")));
     }
 
 }
