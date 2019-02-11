@@ -74,4 +74,9 @@ public class Game {
                 .toArray();
     }
 
+    public void print(){
+
+        System.out.println("6d Qs 6c 7c 3c Kh 3s Pair(Winner)");
+    }
+
 }
