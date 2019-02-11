@@ -62,7 +62,19 @@ public class Hand {
     }
 
     public String printScore(){
-        return "";
+        switch(score){
+            case FOLD: return "";
+            case HIGH_CARD: return "High Cards"; 
+            case PAIR: return "Pair"; 
+            case TWO_PAIRS: return "Two Pairs"; 
+            case THREE_OF_A_KIND: return "Three Of A Kind"; 
+            case STRAIGHT: return "Straight"; 
+            case FLUSH: return "Flush"; 
+            case FULL_HOUSE: return "Full House"; 
+            case FOUR_OF_A_KIND: return "Four Of A Kind"; 
+            case STRAIGHT_FLUSH: return "Straight Flush"; 
+            default: return "";
+        }
     }
 
     public int size() {

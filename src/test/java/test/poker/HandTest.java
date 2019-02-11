@@ -447,6 +447,12 @@ public class HandTest {
         assertThat(h.printScore(),is(equalTo("")));
     }
 
+    @Test
+    public void printScorePair(){
+        Hand h = new Hand("Ah Th Kh 2d Ac 3s 8d");
+        assertThat(h.printScore(),is(equalTo("Pair")));
+    }
+
 
 
 
