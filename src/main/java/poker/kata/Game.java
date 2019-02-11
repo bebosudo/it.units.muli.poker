@@ -77,7 +77,7 @@ public class Game {
 
     public void print(){
 
-        ArrayList<String> players = hands.stream().map(x->x.getOriginal() + " " + x.printScore()).collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<String> players = hands.stream().map(x->x.getOriginal().replace('\n', ' ') + x.printScore()).collect(Collectors.toCollection(ArrayList::new));
 
         players.stream().forEach(System.out::println);
 

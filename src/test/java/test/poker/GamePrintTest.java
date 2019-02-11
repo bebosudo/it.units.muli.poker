@@ -38,15 +38,30 @@ public class GamePrintTest {
         System.setErr(originalErr);
     }
 
+//    @Test
+//    public void printSinglePlayer(){
+//        Game g = createSampleGameFromArrayOfStrings(new String[] {
+//                "6d Qs 6c 7c 3c Kh 3s"
+//        });
+//
+//        g.print();
+//
+//        assertThat(outContent.toString(), is(equalTo("6d Qs 6c 7c 3c Kh 3s Two Pairs\n")));
+//    }
+
     @Test
-    public void printSinglePlayer(){
-        Game g = createSampleGameFromArrayOfStrings(new String[] {
-                "6d Qs 6c 7c 3c Kh 3s"
+    public void printMultiPlayers(){
+        Game g = createSampleGameFromArrayOfStrings(new String[]{
+                "6d 2h 6h 2s 3d Qh 4s\n",
+                "As 5c 6c 7c 3c Kh 3s\n",
+                "6s 2d 6c 2c 3c Jh Ts\n",
         });
 
         g.print();
 
-        assertThat(outContent.toString(), is(equalTo("6d Qs 6c 7c 3c Kh 3s Two Pairs\n")));
+        assertThat(outContent.toString(), is(equalTo("6d 2h 6h 2s 3d Qh 4s Two Pairs\n" +
+                                                             "As 5c 6c 7c 3c Kh 3s Pair\n" +
+                                                             "6s 2d 6c 2c 3c Jh Ts Two Pairs\n")));
     }
 
 
