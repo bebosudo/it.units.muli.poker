@@ -39,14 +39,16 @@ public class GamePrintTest {
     }
 
     @Test
-    public void printWinnerSinglePlayerNoFold(){
+    public void printSinglePlayer(){
         Game g = createSampleGameFromArrayOfStrings(new String[] {
-                "6d Qs 6c 7c 3c Kh 3s\n"
+                "6d Qs 6c 7c 3c Kh 3s"
         });
 
         g.print();
 
-        assertThat(outContent.toString(), is(equalTo("6d Qs 6c 7c 3c Kh 3s Pair(Winner)\n")));
+        assertThat(outContent.toString(), is(equalTo("6d Qs 6c 7c 3c Kh 3s\n")));
     }
+
+
 
 }
