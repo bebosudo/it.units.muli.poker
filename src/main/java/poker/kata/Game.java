@@ -79,7 +79,12 @@ public class Game {
 
         ArrayList<String> players = hands.stream().map(x->x.getOriginal().replace('\n', ' ') + x.printScore()).collect(Collectors.toCollection(ArrayList::new));
 
-        players.stream().forEach(System.out::println);
+        int[] wins = getWinners();
 
+        for (int i = 0; i < wins.length; i++) {
+            players.set(wins[i],players.get(wins[i]).replaceAll("$", " (winner)"));
+        }
+
+        players.stream().forEach(System.out::println);
     }
 }
