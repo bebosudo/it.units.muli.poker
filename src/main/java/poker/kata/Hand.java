@@ -1,13 +1,8 @@
 package poker.kata;
 
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import java.util.*;
+import java.util.regex.*;
+import java.util.stream.*;
 
 
 public class Hand {
@@ -26,7 +21,7 @@ public class Hand {
     public Hand(String HandStr) {
 
         original = HandStr;
-        cards = new ArrayList();
+        cards = new ArrayList<>();
 
         String reg = "([TtJjQqKkAa\\d][cdshCSDH])";
         Pattern pat = Pattern.compile(reg);
@@ -45,35 +40,43 @@ public class Hand {
         setScore();
     }
 
-    public Card getCard(int i) {
+    private Card getCard(int i) {
         return cards.get(i);
     }
-
-    public ArrayList<Card> getCards() {
-        return cards;
-    }
-
-    public String getOriginal() {
+    String getOriginal() {
         return original;
     }
+
+    // public ArrayList<Card> getCards() { return cards; }
 
     public Rank getScore() {
         return score;
     }
 
-    public String printScore(){
-        switch(score){
-            case FOLD: return "";
-            case HIGH_CARD: return "High Cards"; 
-            case PAIR: return "Pair"; 
-            case TWO_PAIRS: return "Two Pairs"; 
-            case THREE_OF_A_KIND: return "Three Of A Kind"; 
-            case STRAIGHT: return "Straight"; 
-            case FLUSH: return "Flush"; 
-            case FULL_HOUSE: return "Full House"; 
-            case FOUR_OF_A_KIND: return "Four Of A Kind"; 
-            case STRAIGHT_FLUSH: return "Straight Flush"; 
-            default: return "";
+    public String printScore() {
+        switch (score) {
+            case FOLD:
+                return "";
+            case HIGH_CARD:
+                return "High Cards";
+            case PAIR:
+                return "Pair";
+            case TWO_PAIRS:
+                return "Two Pairs";
+            case THREE_OF_A_KIND:
+                return "Three Of A Kind";
+            case STRAIGHT:
+                return "Straight";
+            case FLUSH:
+                return "Flush";
+            case FULL_HOUSE:
+                return "Full House";
+            case FOUR_OF_A_KIND:
+                return "Four Of A Kind";
+            case STRAIGHT_FLUSH:
+                return "Straight Flush";
+            default:
+                return "";
         }
     }
 
@@ -84,14 +87,14 @@ public class Hand {
     public int compareTo(Hand h) {
         int compareScores = this.getScore().compareTo(h.getScore());
         //compareScores is !=0 if one of the two hands' score is larger than the other one
-        if(compareScores!=0){
+        if (compareScores != 0) {
             return compareScores;
         }
         //if the scores are the same, I need to compare kickers
         //since the hands' cards are ordered, I can operate a pairwise comparison
-        for(int i=0; i< VALID_HAND_SIZE; i++){
+        for (int i = 0; i < VALID_HAND_SIZE; i++) {
             int compareCards = this.getCard(i).getFace().compareTo(h.getCard(i).getFace());
-            if(compareCards!=0) {
+            if (compareCards != 0) {
                 return compareCards;
             }
         }
@@ -159,11 +162,11 @@ public class Hand {
 
 
     private void sortByRankDecreasing() {
-        Collections.sort(cards, Card.COMPARE_BY_FACE_DECR);
+        cards.sort(Card.COMPARE_BY_FACE_DECR);
     }
 
     private void sortBySuit() {
-        Collections.sort(cards, Card.COMPARE_BY_SUIT);
+        cards.sort(Card.COMPARE_BY_SUIT);
     }
 
     public boolean compareToCardsArray(Card[] other) {
@@ -202,7 +205,7 @@ public class Hand {
         return true;
     }
 
-    private boolean foundGroupIntoArray(ArrayList<Card> arr, int groupSize){
+    private boolean foundGroupIntoArray(ArrayList<Card> arr, int groupSize) {
         return arr.size() == groupSize;
     }
 
@@ -210,9 +213,9 @@ public class Hand {
         int largerGroupSize = Math.max(lengthGroup1, lengthGroup2);
         int smallerGroupSize = Math.min(lengthGroup1, lengthGroup2);
 
-        ArrayList<Card> cardsBackup = cards.stream().collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<Card> cardsBackup = new ArrayList<>(cards);
         //This arraylist will store new cards ordered by (largerGroupSize + smallerGroupSize + everything else)
-        ArrayList<Card> orderedCards = new ArrayList();
+        ArrayList<Card> orderedCards = new ArrayList<>();
 
         searchForGroupOfCardsInArrayThenPopGroup(cards, orderedCards, largerGroupSize);
 
@@ -268,8 +271,6 @@ public class Hand {
             return false;
         }
 
-
-
         // Check if the first three quintets are a Straight.
         for (int i = 0; i < partialCards.size() - 4; i++) {
             if (partialCards.get(i).getFace().getValue() - partialCards.get(i + 4).getFace().getValue() == 4) {
@@ -314,43 +315,39 @@ public class Hand {
         return false;
     }
 
-    private boolean orderByFlush() {
-        boolean b = false;
-        this.sortBySuit();
-        int i = 0, j = 0;
+// Search for 5 cards with the same suit.
+private boolean orderByFlush() {
 
+    Map<CardSuit, Long> numberBySuit =
+            cards.stream()
+                    .collect(Collectors.groupingBy(Card::getSuit, Collectors.counting()));
 
-        for (i = 0; i < 3; i++) {
-            while (j < 6 && cards.get(j + 1).getSuit().equals(cards.get(i).getSuit())) {
-                j++;
-            }
-            if ((j - i) >= 4) {
-                b = true;
-                break;
-            }
-            i = j;
+    boolean found = false;
+    CardSuit suitFound = CardSuit.CLUBS;  // Just a random suit, that it's overwritten later.
+    for (Map.Entry<CardSuit, Long> entry: numberBySuit.entrySet()){
+        if (entry.getValue() >= 5) {
+            found = true;
+            suitFound = entry.getKey();
         }
-
-        ArrayList<Card> orderedCards = new ArrayList<>();
-
-        for (int ii = i; ii <= j; ii++) {
-            orderedCards.add(cards.get(ii));
-        }
-
-        // Sort the cards that are part of the flush.
-        orderedCards.sort(Card.COMPARE_BY_FACE_DECR);
-
-        // And push all the remaining cards.
-        for (int ii = 0; ii < MAX_HAND_SIZE; ii++) {
-            if (ii < i || ii > j) {
-                orderedCards.add(cards.get(ii));
-            }
-        }
-
-        cards = orderedCards;
-
-        return b;
     }
+
+    if (! found) { return false; }
+
+    CardSuit finalSuitFound = suitFound;
+    ArrayList<Card> orderedCards = cards.stream()
+            .filter(x -> x.getSuit() == finalSuitFound)
+            .sorted(Card.COMPARE_BY_FACE_DECR)
+            .collect(Collectors.toCollection(ArrayList::new));
+
+    for (Card card: cards) {
+        if (card.getSuit() != suitFound) {
+            orderedCards.add(card);
+        }
+    }
+
+    cards = orderedCards;
+    return true;
+}
 
     private boolean orderByFull() {
 
@@ -372,7 +369,7 @@ public class Hand {
             // many same-suit cards there are more than the 5 detected by the flush.
             int sameSuitIndex = 4;
             while (cards.get(0).getSuit().equals(cards.get(sameSuitIndex + 1).getSuit())) {
-                    sameSuitIndex++;
+                sameSuitIndex++;
             }
 
             // The index is 1 less than the Number of same-suits.
@@ -380,14 +377,5 @@ public class Hand {
         }
 
         return false;
-    }
-
-
-
-    public static void main(String[] args) {
-        Hand h = new Hand("8d 5d 8c Td 9h 4d 6c");
-        // h.printCards();
-        System.out.println("\n");
-
     }
 }

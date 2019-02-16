@@ -160,9 +160,8 @@ public class GameTests {
         });
 
         Set<Integer> expWinners = Stream.of(0, 2).collect(Collectors.toSet());
-        int[] winners = g.getWinners();
-        for (int i = 0; i < winners.length; i++) {
-            assertThat(expWinners.contains(winners[i]), is(true));
+        for (int winner : g.getWinners()) {
+            assertThat(expWinners.contains(winner), is(true));
         }
     }
 

@@ -1,17 +1,8 @@
 package poker.kata;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.IntSummaryStatistics;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
-
+import java.io.*;
+import java.util.*;
+import java.util.stream.*;
 import java.net.URL;
 
 
@@ -19,7 +10,7 @@ public class Game {
 
     private ArrayList<Hand> hands;
     private ArrayList<Rank> ranks;
-    private boolean[] winners;
+    // private boolean[] winners;
 
     public Game(ArrayList<String> handsStr) {
         hands = handsStr.stream().map(Hand::new).collect(Collectors.toCollection(ArrayList::new));
@@ -75,14 +66,13 @@ public class Game {
     }
 
 
-    public void print(){
+    public void print() {
+        ArrayList<String> players = hands.stream().map(x -> x.getOriginal().replace('\n', ' ') + x.printScore()).collect(Collectors.toCollection(ArrayList::new));
 
-        ArrayList<String> players = hands.stream().map(x->x.getOriginal().replace('\n', ' ') + x.printScore()).collect(Collectors.toCollection(ArrayList::new));
+        int[] winners = getWinners();
 
-        int[] wins = getWinners();
-
-        for (int i = 0; i < wins.length; i++) {
-            players.set(wins[i],players.get(wins[i]).replaceAll("$", " (winner)"));
+        for (int win : winners) {
+            players.set(win, players.get(win).replaceAll("$", " (winner)"));
         }
 
         players.stream().forEach(System.out::println);
