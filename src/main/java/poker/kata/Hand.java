@@ -1,6 +1,7 @@
 package poker.kata;
 
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.regex.*;
 import java.util.stream.*;
 
@@ -43,6 +44,7 @@ public class Hand {
     private Card getCard(int i) {
         return cards.get(i);
     }
+
     String getOriginal() {
         return original;
     }
@@ -165,93 +167,92 @@ public class Hand {
         cards.sort(Card.COMPARE_BY_FACE_DECR);
     }
 
-    private void sortBySuit() {
-        cards.sort(Card.COMPARE_BY_SUIT);
-    }
-
     public boolean compareToCardsArray(Card[] other) {
         if (other.length != size()) {
             throw new ArrayIndexOutOfBoundsException("The two hands do not share the same size!");
         } else {
-            // limit(5) is used to compare only first 5, no need to compare more
-            return IntStream.range(0, other.length).mapToLong(i -> other[i].getFace()
-                    .compareTo(getCard(i).getFace())).limit(VALID_HAND_SIZE).allMatch(x -> x == 0);
+            // only VALID_HAND_SIZE(=5) cards need to be examined, no need to compare more in Texas Hold'em.
+            return IntStream.range(0, VALID_HAND_SIZE)
+                    .mapToLong(i -> other[i].getFace().compareTo(getCard(i).getFace()))
+                    .allMatch(x -> x == 0);
         }
     }
 
-    private void searchForGroupOfCardsInArrayThenPopGroup(ArrayList<Card> arrayFrom, ArrayList<Card> arrayTo, int groupLength) {
-        //search into arrayFrom if it can find a given group of cards, then it pops the group from arrayFrom
-        //and pushes it into arrayTo
-        for (int i = 0; i < arrayFrom.size() - groupLength + 1; i++) {
-            if (cards.get(i).getFace().equals(cards.get(i + groupLength - 1).getFace())) {
-                popCards(arrayFrom, arrayTo, i, i + groupLength);
-                return;
+    private boolean findAndOrderFaceDuplicates(int lengthGroup1, int lengthGroup2) {
+        // TODO: Maybe we can avoid re-ordering input here, and assume the caller will put the bigger group size first?
+        int largerGroupSize = Math.max(lengthGroup1, lengthGroup2);
+        int smallerGroupSize = Math.min(lengthGroup1, lengthGroup2);
+
+        // Sort the pairs first on the higher number of occurrences, then on the value of faces.
+        ArrayList<Entry<CardFace, Long>> occurByFace =
+                cards.stream()
+                        .collect(Collectors.groupingBy(Card::getFace, Collectors.counting()))
+                        .entrySet().stream()
+                        .filter(keyVal -> keyVal.getValue() == largerGroupSize || keyVal.getValue() == smallerGroupSize)
+                        .sorted(Comparator.comparingLong(Entry::getValue))
+                        .sorted((e1, e2) -> e2.getKey().getValue() - e1.getKey().getValue())
+                        .collect(Collectors.toCollection(ArrayList::new));
+
+        // If no groups are found, exit.
+        if (occurByFace.size() == 0) {
+            return false;
+        }
+
+        // If we were asked to search for a second group, but we only found one set of faces, groups are `404'.
+        if (smallerGroupSize != NO_GROUP && occurByFace.size() == 1) {
+            return false;
+        }
+
+        // If the largest groups found don't match with the size requested, 404.
+        if (occurByFace.get(0).getValue() != largerGroupSize
+                || (occurByFace.size() == 2 && occurByFace.get(1).getValue() != smallerGroupSize)) {
+            return false;
+        }
+
+        // Order on the two groups found above.
+        ArrayList<Card> orderedCards = new ArrayList<>();
+
+        for (Entry<CardFace, Long> groupId : occurByFace) {
+            for (Card card : cards) {
+                if (card.getFace() == groupId.getKey()) {
+                    orderedCards.add(card);
+                }
             }
         }
-    }
 
-    private void popCards(ArrayList<Card> arrayFrom, ArrayList<Card> arrayTo, int minIndex, int maxIndex) {
-        int j = minIndex;
-        while (j < maxIndex) {
-            arrayTo.add(arrayFrom.remove(minIndex));
-            j++;
+        // Sort all the cards, but later ignore those with suits already extracted, so that the kickers are the cards
+        // with higher Face values.
+        sortByRankDecreasing();
+
+        for (Card card : cards) {
+            // Conversion to Set to filter the remaining cards don't have the same face of the previous groups.
+            if (!occurByFace.stream().map(Entry::getKey).collect(Collectors.toSet()).contains(card.getFace())) {
+                orderedCards.add(card);
+            }
         }
-    }
 
-    private boolean switchCardArraysAndReturnTrue(ArrayList<Card> orderedCards) {
-        popCards(cards, orderedCards, 0, cards.size());
-        //replaces the cards arrayList with the new one
         cards = orderedCards;
         return true;
     }
 
-    private boolean foundGroupIntoArray(ArrayList<Card> arr, int groupSize) {
-        return arr.size() == groupSize;
-    }
-
-    private boolean findGroupsIntoOrderedCards(int lengthGroup1, int lengthGroup2) {
-        int largerGroupSize = Math.max(lengthGroup1, lengthGroup2);
-        int smallerGroupSize = Math.min(lengthGroup1, lengthGroup2);
-
-        ArrayList<Card> cardsBackup = new ArrayList<>(cards);
-        //This arraylist will store new cards ordered by (largerGroupSize + smallerGroupSize + everything else)
-        ArrayList<Card> orderedCards = new ArrayList<>();
-
-        searchForGroupOfCardsInArrayThenPopGroup(cards, orderedCards, largerGroupSize);
-
-        //if the new arraylist has the size of the group, it means it has found the desided group, then proceeds
-        //on to the next group
-        if (foundGroupIntoArray(orderedCards, largerGroupSize)) {
-            if (smallerGroupSize > 0) {
-                searchForGroupOfCardsInArrayThenPopGroup(cards, orderedCards, smallerGroupSize);
-                if (orderedCards.size() == largerGroupSize + smallerGroupSize) {
-                    return switchCardArraysAndReturnTrue(orderedCards);
-
-                } else {
-                    cards = cardsBackup;
-                    return false;
-                }
-            } else {
-                return switchCardArraysAndReturnTrue(orderedCards);
-            }
-        } else {
-            return false;
-        }
-    }
-
     private boolean orderByPair() {
-        this.sortByRankDecreasing();
-        return findGroupsIntoOrderedCards(FIND_PAIR, NO_GROUP);
+        return findAndOrderFaceDuplicates(FIND_PAIR, NO_GROUP);
     }
 
     private boolean orderByDouble() {
-        this.sortByRankDecreasing();
-        return findGroupsIntoOrderedCards(FIND_PAIR, FIND_PAIR);
+        return findAndOrderFaceDuplicates(FIND_PAIR, FIND_PAIR);
     }
 
     private boolean orderBySet() {
-        this.sortByRankDecreasing();
-        return findGroupsIntoOrderedCards(3, 0);
+        return findAndOrderFaceDuplicates(FIND_SET, NO_GROUP);
+    }
+
+    private boolean orderByFull() {
+        return findAndOrderFaceDuplicates(FIND_SET, FIND_PAIR);
+    }
+
+    private boolean orderByQuad() {
+        return findAndOrderFaceDuplicates(FIND_QUAD, NO_GROUP);
     }
 
     private boolean orderByStraight() {
@@ -315,51 +316,40 @@ public class Hand {
         return false;
     }
 
-// Search for 5 cards with the same suit.
-private boolean orderByFlush() {
+    // Search for 5 cards with the same suit.
+    private boolean orderByFlush() {
 
-    Map<CardSuit, Long> numberBySuit =
-            cards.stream()
-                    .collect(Collectors.groupingBy(Card::getSuit, Collectors.counting()));
+        Map<CardSuit, Long> numberBySuit =
+                cards.stream()
+                        .collect(Collectors.groupingBy(Card::getSuit, Collectors.counting()));
 
-    boolean found = false;
-    CardSuit suitFound = CardSuit.CLUBS;  // Just a random suit, that it's overwritten later.
-    for (Map.Entry<CardSuit, Long> entry: numberBySuit.entrySet()){
-        if (entry.getValue() >= 5) {
-            found = true;
-            suitFound = entry.getKey();
+        boolean found = false;
+        CardSuit suitFound = CardSuit.CLUBS;  // Just a random suit, that it's overwritten later.
+        for (Entry<CardSuit, Long> entry : numberBySuit.entrySet()) {
+            if (entry.getValue() >= 5) {
+                found = true;
+                suitFound = entry.getKey();
+            }
         }
-    }
 
-    if (! found) { return false; }
-
-    CardSuit finalSuitFound = suitFound;
-    ArrayList<Card> orderedCards = cards.stream()
-            .filter(x -> x.getSuit() == finalSuitFound)
-            .sorted(Card.COMPARE_BY_FACE_DECR)
-            .collect(Collectors.toCollection(ArrayList::new));
-
-    for (Card card: cards) {
-        if (card.getSuit() != suitFound) {
-            orderedCards.add(card);
+        if (!found) {
+            return false;
         }
-    }
 
-    cards = orderedCards;
-    return true;
-}
+        CardSuit finalSuitFound = suitFound;
+        ArrayList<Card> orderedCards = cards.stream()
+                .filter(x -> x.getSuit() == finalSuitFound)
+                .sorted(Card.COMPARE_BY_FACE_DECR)
+                .collect(Collectors.toCollection(ArrayList::new));
 
-    private boolean orderByFull() {
+        for (Card card : cards) {
+            if (card.getSuit() != suitFound) {
+                orderedCards.add(card);
+            }
+        }
 
-        this.sortByRankDecreasing();
-
-        return findGroupsIntoOrderedCards(FIND_SET, FIND_PAIR);
-
-    }
-
-    private boolean orderByQuad() {
-        this.sortByRankDecreasing();
-        return findGroupsIntoOrderedCards(FIND_QUAD, NO_GROUP);
+        cards = orderedCards;
+        return true;
     }
 
     private boolean orderByStraightFlush() {

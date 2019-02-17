@@ -75,6 +75,6 @@ public class Game {
             players.set(win, players.get(win).replaceAll("$", " (winner)"));
         }
 
-        players.stream().forEach(System.out::println);
+        players.forEach(System.out::println);
     }
 }

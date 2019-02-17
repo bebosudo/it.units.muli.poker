@@ -79,6 +79,7 @@ public class GameTests {
 
         URL filename = GameTests.class.getClassLoader().getResource("testGame1");
 
+        assert filename != null;
         Game g = new Game(filename);
 
         Rank[] expRanks = {Rank.PAIR, Rank.PAIR, Rank.PAIR, Rank.FOLD, Rank.FOLD, Rank.FLUSH};
@@ -143,8 +144,8 @@ public class GameTests {
 
         Set<Integer> expWinners = Stream.of(0, 2).collect(Collectors.toSet());
         int[] winners = g.getWinners();
-        for (int i = 0; i < winners.length; i++) {
-            assertThat(expWinners.contains(winners[i]), is(true));
+        for (int winner : winners) {
+            assertThat(expWinners.contains(winner), is(true));
         }
     }
 
