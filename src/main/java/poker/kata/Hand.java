@@ -272,7 +272,7 @@ public class Hand {
         }
 
         // Check if the first three quintets are a Straight.
-        for (int i = 0; i < partialCards.size() - 4; i++) {
+        for (int i = 0; i < partialCards.size() - VALID_HAND_SIZE + 1; i++) {
             if (partialCards.get(i).getFace().getValue() - partialCards.get(i + 4).getFace().getValue() == 4) {
 
                 // Overwrite the cards array with straight we just found.
@@ -297,7 +297,7 @@ public class Hand {
                 partialCards.get(partialCards.size() - 1).getFace() == CardFace.TWO &&
                 partialCards.get(partialCards.size() - 4).getFace() == CardFace.FIVE) {
 
-            for (int lastCardsId = 0; lastCardsId < 4; lastCardsId++) {
+            for (int lastCardsId = 0; lastCardsId < VALID_HAND_SIZE - 1; lastCardsId++) {
                 cards.set(3 - lastCardsId, partialCards.remove(partialCards.size() - 1));
             }
 
@@ -323,9 +323,10 @@ private boolean orderByFlush() {
                     .collect(Collectors.groupingBy(Card::getSuit, Collectors.counting()));
 
     boolean found = false;
-    CardSuit suitFound = CardSuit.CLUBS;  // Just a random suit, that it's overwritten later.
+    CardSuit suitFound = null; //just initialize
+
     for (Map.Entry<CardSuit, Long> entry: numberBySuit.entrySet()){
-        if (entry.getValue() >= 5) {
+        if (entry.getValue() >= VALID_HAND_SIZE) {
             found = true;
             suitFound = entry.getKey();
         }
@@ -334,11 +335,14 @@ private boolean orderByFlush() {
     if (! found) { return false; }
 
     CardSuit finalSuitFound = suitFound;
+
+    //add cards of the found suit to the orderedCards array
     ArrayList<Card> orderedCards = cards.stream()
             .filter(x -> x.getSuit() == finalSuitFound)
             .sorted(Card.COMPARE_BY_FACE_DECR)
             .collect(Collectors.toCollection(ArrayList::new));
 
+    //push the leftovers at the end of the array
     for (Card card: cards) {
         if (card.getSuit() != suitFound) {
             orderedCards.add(card);
@@ -367,7 +371,7 @@ private boolean orderByFlush() {
 
             // We know for sure that is a flush, so up to index 4 they are all the same suit; we need to understand how
             // many same-suit cards there are more than the 5 detected by the flush.
-            int sameSuitIndex = 4;
+            int sameSuitIndex = VALID_HAND_SIZE - 1;
             while (cards.get(0).getSuit().equals(cards.get(sameSuitIndex + 1).getSuit())) {
                 sameSuitIndex++;
             }
