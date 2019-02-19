@@ -1,5 +1,6 @@
 package poker.kata;
 
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.regex.*;
 import java.util.stream.*;
@@ -13,7 +14,6 @@ public class Hand {
 
     private static final int MAX_HAND_SIZE = 7;
     private static final int VALID_HAND_SIZE = 5;
-    private static final int NO_GROUP = 0;
     private static final int FIND_PAIR = 2;
     private static final int FIND_SET = 3;
     private static final int FIND_QUAD = 4;
@@ -171,7 +171,7 @@ public class Hand {
 
     public boolean compareToCardsArray(Card[] other) {
         if (other.length != size()) {
-            throw new ArrayIndexOutOfBoundsException("The two hands do not share the same size!");
+            return false;
         } else {
             // limit(5) is used to compare only first 5, no need to compare more
             return IntStream.range(0, other.length).mapToLong(i -> other[i].getFace()
@@ -179,15 +179,20 @@ public class Hand {
         }
     }
 
-    private void searchForGroupOfCardsInArrayThenPopGroup(ArrayList<Card> arrayFrom, ArrayList<Card> arrayTo, int groupLength) {
+    private boolean searchForGroupOfCardsInArrayThenPopGroup(ArrayList<Card> arrayFrom, ArrayList<Card> arrayTo, int groupLength) {
         //search into arrayFrom if it can find a given group of cards, then it pops the group from arrayFrom
         //and pushes it into arrayTo
         for (int i = 0; i < arrayFrom.size() - groupLength + 1; i++) {
             if (cards.get(i).getFace().equals(cards.get(i + groupLength - 1).getFace())) {
                 popCards(arrayFrom, arrayTo, i, i + groupLength);
-                return;
+                return true;
             }
         }
+        return false;
+    }
+
+    private void popCards(ArrayList<Card> arrayFrom, ArrayList<Card> arrayTo){
+        popCards(arrayFrom, arrayTo, 0, arrayFrom.size());
     }
 
     private void popCards(ArrayList<Card> arrayFrom, ArrayList<Card> arrayTo, int minIndex, int maxIndex) {
@@ -198,50 +203,37 @@ public class Hand {
         }
     }
 
-    private boolean switchCardArraysAndReturnTrue(ArrayList<Card> orderedCards) {
-        popCards(cards, orderedCards, 0, cards.size());
-        //replaces the cards arrayList with the new one
-        cards = orderedCards;
-        return true;
-    }
 
-    private boolean foundGroupIntoArray(ArrayList<Card> arr, int groupSize) {
-        return arr.size() == groupSize;
-    }
-
-    private boolean findGroupsIntoOrderedCards(int lengthGroup1, int lengthGroup2) {
-        int largerGroupSize = Math.max(lengthGroup1, lengthGroup2);
-        int smallerGroupSize = Math.min(lengthGroup1, lengthGroup2);
-
+    private boolean findGroupsIntoOrderedCards(int... groupsLength){
         ArrayList<Card> cardsBackup = new ArrayList<>(cards);
-        //This arraylist will store new cards ordered by (largerGroupSize + smallerGroupSize + everything else)
         ArrayList<Card> orderedCards = new ArrayList<>();
 
-        searchForGroupOfCardsInArrayThenPopGroup(cards, orderedCards, largerGroupSize);
+        //order groupsLength in decreasing order
+        groupsLength = Arrays.stream(groupsLength).boxed()
+                                                  .sorted(Comparator.reverseOrder())
+                                                  .mapToInt(Integer::intValue)
+                                                  .toArray();
 
-        //if the new arraylist has the size of the group, it means it has found the desided group, then proceeds
-        //on to the next group
-        if (foundGroupIntoArray(orderedCards, largerGroupSize)) {
-            if (smallerGroupSize > 0) {
-                searchForGroupOfCardsInArrayThenPopGroup(cards, orderedCards, smallerGroupSize);
-                if (orderedCards.size() == largerGroupSize + smallerGroupSize) {
-                    return switchCardArraysAndReturnTrue(orderedCards);
 
-                } else {
-                    cards = cardsBackup;
-                    return false;
-                }
-            } else {
-                return switchCardArraysAndReturnTrue(orderedCards);
+        for(int groupLength : groupsLength){
+            boolean found = searchForGroupOfCardsInArrayThenPopGroup(cards, orderedCards, groupLength);
+            if(!found){
+                //if not found, revert to backup
+                cards = cardsBackup;
+                return false;
             }
-        } else {
-            return false;
         }
+
+        //pop leftovers of cards into orderedcards, then overwrite
+        popCards(cards, orderedCards);
+        cards = orderedCards;
+        return true;
+
     }
 
     private boolean orderByPair() {
         this.sortByRankDecreasing();
-        return findGroupsIntoOrderedCards(FIND_PAIR, NO_GROUP);
+        return findGroupsIntoOrderedCards(FIND_PAIR);
     }
 
     private boolean orderByDouble() {
@@ -251,7 +243,7 @@ public class Hand {
 
     private boolean orderBySet() {
         this.sortByRankDecreasing();
-        return findGroupsIntoOrderedCards(3, 0);
+        return findGroupsIntoOrderedCards(FIND_SET);
     }
 
     private ArrayList<Card> getDistinctCardsByFace(int limitSearchTo){
@@ -387,7 +379,7 @@ private boolean orderByFlush() {
 
     private boolean orderByQuad() {
         this.sortByRankDecreasing();
-        return findGroupsIntoOrderedCards(FIND_QUAD, NO_GROUP);
+        return findGroupsIntoOrderedCards(FIND_QUAD);
     }
 
     private boolean orderByStraightFlush() {
