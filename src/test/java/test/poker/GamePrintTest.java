@@ -46,7 +46,7 @@ public class GamePrintTest {
 
         g.print();
 
-        assertThat(outContent.toString(), is(equalTo("6d Qs 6c 7c 3c Kh 3s Two Pairs (winner)\n")));
+        assertThat(outContent.toString().replaceAll("\\r",""), is(equalTo("6d Qs 6c 7c 3c Kh 3s Two Pairs (winner)\n")));
     }
 
     @Test
@@ -59,7 +59,7 @@ public class GamePrintTest {
 
         g.print();
 
-        assertThat(outContent.toString(), is(equalTo("6d 2h 6h 2s 3d Qh 4s Two Pairs (winner)\n" +
+        assertThat(outContent.toString().replaceAll("\\r",""), is(equalTo("6d 2h 6h 2s 3d Qh 4s Two Pairs (winner)\n" +
                                                              "Js 3c 6h 2s 3d Qh 4s Pair\n" +
                                                              "6s 7d 6h 2s 3d Qh 4s Pair\n")));
     }
@@ -74,7 +74,7 @@ public class GamePrintTest {
 
         g.print();
 
-        assertThat(outContent.toString(), is(equalTo("6d 2h 6h 2s 3d Qh 4s Two Pairs (winner)\n" +
+        assertThat(outContent.toString().replaceAll("\\r",""), is(equalTo("6d 2h 6h 2s 3d Qh 4s Two Pairs (winner)\n" +
                                                              "Js 3c 6h 2s 3d Qh 4s Pair\n" +
                                                              "6s 2d 6h 2s 3d Qh 4s Two Pairs (winner)\n")));
     }
