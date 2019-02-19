@@ -254,61 +254,85 @@ public class Hand {
         return findGroupsIntoOrderedCards(3, 0);
     }
 
+    private ArrayList<Card> getDistinctCardsByFace(int limitSearchTo){
+        return cards.stream()
+                .limit(limitSearchTo)
+                .sorted(Card.COMPARE_BY_FACE_DECR)
+                .filter(Utils.distinctByKey(Card::getFace))
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    private int getIndexOfNormalStraightInFaceArray(ArrayList<Card> searchArray){
+        for (int i = 0; i < searchArray.size() - (VALID_HAND_SIZE - 1); i++) {
+            if (searchArray.get(i).getFace().getValue() - searchArray.get(i + VALID_HAND_SIZE - 1).getFace().getValue() == (VALID_HAND_SIZE - 1)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private int getIndexOfAceToFiveStraightInFaceArray(ArrayList<Card> searchArray){
+        if (searchArray.get(0).getFace() == CardFace.ACE &&
+                searchArray.get(searchArray.size() - 1).getFace() == CardFace.TWO &&
+                searchArray.get(searchArray.size() - 4).getFace() == CardFace.FIVE) {
+            return 0;
+        }
+        return -1;
+    }
+
+    private void overwriteCardsForNormalStraight(ArrayList<Card> searchArray, int firstCardOfStraight){
+        //first remove straight and place it on top of the cards array
+        for (int fillCardsArrayId = 0; fillCardsArrayId < VALID_HAND_SIZE; fillCardsArrayId++) {
+            // The card to pop in the temp array will be always the same, because at the
+            // previous iteration we removed its left.
+            cards.set(fillCardsArrayId, searchArray.remove(firstCardOfStraight));
+        }
+
+        //then overwrite with the leftovers
+        for (int leftoversCardsId = 0; leftoversCardsId < searchArray.size(); leftoversCardsId++) {
+            cards.set(leftoversCardsId + VALID_HAND_SIZE, searchArray.remove(0));
+        }
+    }
+
+    private void overwriteCardsForAceToFiveStraight(ArrayList<Card> searchArray){
+        //first set the cards from 5 to 2 on top of the cards array
+        for (int lastCardsId = 0; lastCardsId < VALID_HAND_SIZE - 1; lastCardsId++) {
+            cards.set(3 - lastCardsId, searchArray.remove(searchArray.size() - 1));
+        }
+
+        // Pop out the Ace to the last position of the straight.
+        cards.set(VALID_HAND_SIZE - 1, searchArray.remove(0));
+
+        // Fill `cards' with the leftovers.
+        for (int leftoversCardsId = 0; leftoversCardsId < searchArray.size(); leftoversCardsId++) {
+            cards.set(leftoversCardsId + VALID_HAND_SIZE, searchArray.remove(0));
+        }
+    }
+
     private boolean orderByStraight() {
         return orderByStraight(cards.size());
     }
 
     private boolean orderByStraight(int straightUpToNumber) {
-        ArrayList<Card> partialCards =
-                cards.stream()
-                        .limit(straightUpToNumber)
-                        .sorted(Card.COMPARE_BY_FACE_DECR)
-                        .filter(Utils.distinctByKey(Card::getFace))
-                        .collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<Card> partialCards = getDistinctCardsByFace(straightUpToNumber);
 
         // There must be at least 5 unique cards to make a Straight.
         if (partialCards.size() < VALID_HAND_SIZE) {
             return false;
         }
 
-        // Check if the first three quintets are a Straight.
-        for (int i = 0; i < partialCards.size() - VALID_HAND_SIZE + 1; i++) {
-            if (partialCards.get(i).getFace().getValue() - partialCards.get(i + 4).getFace().getValue() == 4) {
+        int indexOfStraight = getIndexOfNormalStraightInFaceArray(partialCards);
 
-                // Overwrite the cards array with straight we just found.
-                for (int fillCardsArrayId = 0; fillCardsArrayId < VALID_HAND_SIZE; fillCardsArrayId++) {
-                    // The card to pop in the temp array will be always the same, because at the
-                    // previous iteration we removed its left.
-                    cards.set(fillCardsArrayId, partialCards.remove(i));
-                }
-
-                // Fill `cards' with the leftovers.
-                int cardsToRemove = partialCards.size();
-                for (int leftoversCardsId = 0; leftoversCardsId < cardsToRemove; leftoversCardsId++) {
-                    cards.set(leftoversCardsId + VALID_HAND_SIZE, partialCards.remove(0));
-                }
-
-                return true;
-            }
+        if(indexOfStraight >= 0){
+            overwriteCardsForNormalStraight(partialCards, indexOfStraight);
+            return true;
         }
 
-        // Treat the Ace separately: check if there's a straight with 'A .. 5 4 3 2'.
-        if (partialCards.get(0).getFace() == CardFace.ACE &&
-                partialCards.get(partialCards.size() - 1).getFace() == CardFace.TWO &&
-                partialCards.get(partialCards.size() - 4).getFace() == CardFace.FIVE) {
+        //check if there's a straight with 'A .. 5 4 3 2'.
+        indexOfStraight = getIndexOfAceToFiveStraightInFaceArray(partialCards);
 
-            for (int lastCardsId = 0; lastCardsId < VALID_HAND_SIZE - 1; lastCardsId++) {
-                cards.set(3 - lastCardsId, partialCards.remove(partialCards.size() - 1));
-            }
-
-            // Pop out the Ace to the last position of the straight.
-            cards.set(4, partialCards.remove(0));
-
-            // Fill `cards' with the leftovers.
-            for (int leftoversCardsId = 0; leftoversCardsId < partialCards.size(); leftoversCardsId++) {
-                cards.set(leftoversCardsId + VALID_HAND_SIZE, partialCards.remove(0));
-            }
-
+        if(indexOfStraight >= 0){
+            overwriteCardsForAceToFiveStraight(partialCards);
             return true;
         }
 
