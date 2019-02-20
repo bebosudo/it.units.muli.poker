@@ -12,11 +12,11 @@ public class Hand {
     private ArrayList<Card> cards;
     private Rank score;
 
-    private static final int MAX_HAND_SIZE = 7;
-    private static final int VALID_HAND_SIZE = 5;
-    private static final int FIND_PAIR = 2;
-    private static final int FIND_SET = 3;
-    private static final int FIND_QUAD = 4;
+    public static final int MAX_HAND_SIZE = 7;
+    public static final int VALID_HAND_SIZE = 5;
+    public static final int FIND_PAIR = 2;
+    public static final int FIND_SET = 3;
+    public static final int FIND_QUAD = 4;
 
     public Hand(String HandStr) {
 
@@ -47,7 +47,7 @@ public class Hand {
         return original;
     }
 
-    // public ArrayList<Card> getCards() { return cards; }
+    //public ArrayList<Card> getCards() { return cards; }
 
     public Rank getScore() {
         return score;
@@ -161,13 +161,13 @@ public class Hand {
     }
 
 
-    private void sortByRankDecreasing() {
+    public void sortByRankDecreasing() {
         cards.sort(Card.COMPARE_BY_FACE_DECR);
     }
 
-    private void sortBySuit() {
+    /*private void sortBySuit() {
         cards.sort(Card.COMPARE_BY_SUIT);
-    }
+    }*/
 
     public boolean compareToCardsArray(Card[] other) {
         if (other.length != size()) {
@@ -178,7 +178,6 @@ public class Hand {
                     .compareTo(getCard(i).getFace())).limit(VALID_HAND_SIZE).allMatch(x -> x == 0);
         }
     }
-
     private boolean searchForGroupOfCardsInArrayThenPopGroup(ArrayList<Card> arrayFrom, ArrayList<Card> arrayTo, int groupLength) {
         //search into arrayFrom if it can find a given group of cards, then it pops the group from arrayFrom
         //and pushes it into arrayTo
@@ -204,7 +203,8 @@ public class Hand {
     }
 
 
-    private boolean findGroupsIntoOrderedCards(int... groupsLength){
+    private boolean orderAndFindGroupsIntoCards(int... groupsLength){
+        this.sortByRankDecreasing();
         ArrayList<Card> cardsBackup = new ArrayList<>(cards);
         ArrayList<Card> orderedCards = new ArrayList<>();
 
@@ -232,18 +232,18 @@ public class Hand {
     }
 
     private boolean orderByPair() {
-        this.sortByRankDecreasing();
-        return findGroupsIntoOrderedCards(FIND_PAIR);
+
+        return orderAndFindGroupsIntoCards(FIND_PAIR);
     }
 
     private boolean orderByDouble() {
-        this.sortByRankDecreasing();
-        return findGroupsIntoOrderedCards(FIND_PAIR, FIND_PAIR);
+
+        return orderAndFindGroupsIntoCards(FIND_PAIR, FIND_PAIR);
     }
 
     private boolean orderBySet() {
-        this.sortByRankDecreasing();
-        return findGroupsIntoOrderedCards(FIND_SET);
+
+        return orderAndFindGroupsIntoCards(FIND_SET);
     }
 
     private ArrayList<Card> getDistinctCardsByFace(int limitSearchTo){
@@ -331,55 +331,53 @@ public class Hand {
         return false;
     }
 
-// Search for 5 cards with the same suit.
-private boolean orderByFlush() {
+    // Search for 5 cards with the same suit.
+    private boolean orderByFlush() {
 
-    Map<CardSuit, Long> numberBySuit =
-            cards.stream()
-                    .collect(Collectors.groupingBy(Card::getSuit, Collectors.counting()));
+        Map<CardSuit, Long> numberBySuit =
+                cards.stream()
+                        .collect(Collectors.groupingBy(Card::getSuit, Collectors.counting()));
 
-    boolean found = false;
-    CardSuit suitFound = null; //just initialize
+        boolean found = false;
+        CardSuit suitFound = null; //just initialize
 
-    for (Map.Entry<CardSuit, Long> entry: numberBySuit.entrySet()){
-        if (entry.getValue() >= VALID_HAND_SIZE) {
-            found = true;
-            suitFound = entry.getKey();
+        for (Map.Entry<CardSuit, Long> entry: numberBySuit.entrySet()){
+            if (entry.getValue() >= VALID_HAND_SIZE) {
+                found = true;
+                suitFound = entry.getKey();
+            }
         }
-    }
 
-    if (! found) { return false; }
+        if (! found) { return false; }
 
-    CardSuit finalSuitFound = suitFound;
+        CardSuit finalSuitFound = suitFound;
 
-    //add cards of the found suit to the orderedCards array
-    ArrayList<Card> orderedCards = cards.stream()
-            .filter(x -> x.getSuit() == finalSuitFound)
-            .sorted(Card.COMPARE_BY_FACE_DECR)
-            .collect(Collectors.toCollection(ArrayList::new));
+        //add cards of the found suit to the orderedCards array
+        ArrayList<Card> orderedCards = cards.stream()
+                .filter(x -> x.getSuit() == finalSuitFound)
+                .sorted(Card.COMPARE_BY_FACE_DECR)
+                .collect(Collectors.toCollection(ArrayList::new));
 
-    //push the leftovers at the end of the array
-    for (Card card: cards) {
-        if (card.getSuit() != suitFound) {
-            orderedCards.add(card);
+        //push the leftovers at the end of the array
+        for (Card card: cards) {
+            if (card.getSuit() != suitFound) {
+                orderedCards.add(card);
+            }
         }
-    }
 
-    cards = orderedCards;
-    return true;
-}
+        cards = orderedCards;
+        return true;
+    }
 
     private boolean orderByFull() {
 
-        this.sortByRankDecreasing();
-
-        return findGroupsIntoOrderedCards(FIND_SET, FIND_PAIR);
+        return orderAndFindGroupsIntoCards(FIND_SET, FIND_PAIR);
 
     }
 
     private boolean orderByQuad() {
-        this.sortByRankDecreasing();
-        return findGroupsIntoOrderedCards(FIND_QUAD);
+
+        return orderAndFindGroupsIntoCards(FIND_QUAD);
     }
 
     private boolean orderByStraightFlush() {
