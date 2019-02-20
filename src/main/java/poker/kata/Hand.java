@@ -183,7 +183,12 @@ public class Hand {
         int largerGroupSize = Math.max(lengthGroup1, lengthGroup2);
         int smallerGroupSize = Math.min(lengthGroup1, lengthGroup2);
 
-        // Sort the pairs first on the higher number of occurrences, then on the value of faces.
+        /*
+        Extract pairs: <FACE,OCCURRENCES> from the cards.
+        Sort the pairs first on the higher number of occurrences, then on the value of faces.
+        We limit to 2 since we want to consider only the first two groups of cards:
+        e.g. given AA KK QQ J -> we want only AA KK, because there is no triple-pair.
+        */
         ArrayList<Entry<CardFace, Long>> occurByFace =
                 cards.stream()
                         .collect(Collectors.groupingBy(Card::getFace, Collectors.counting()))
@@ -191,6 +196,7 @@ public class Hand {
                         .filter(keyVal -> keyVal.getValue() == largerGroupSize || keyVal.getValue() == smallerGroupSize)
                         .sorted(Comparator.comparingLong(Entry::getValue))
                         .sorted((e1, e2) -> e2.getKey().getValue() - e1.getKey().getValue())
+                        .limit(2)
                         .collect(Collectors.toCollection(ArrayList::new));
 
         // If no groups are found, exit.
@@ -209,9 +215,8 @@ public class Hand {
             return false;
         }
 
-        // Order on the two groups found above.
+        // Extract the cards coming from two groups found above.
         ArrayList<Card> orderedCards = new ArrayList<>();
-
         for (Entry<CardFace, Long> groupId : occurByFace) {
             for (Card card : cards) {
                 if (card.getFace() == groupId.getKey()) {
@@ -220,13 +225,12 @@ public class Hand {
             }
         }
 
-        // Sort all the cards, but later ignore those with suits already extracted, so that the kickers are the cards
-        // with higher Face values.
+        // Sort and then ignore the faces already extracted, so that we place first kickers with higher Face values.
         sortByRankDecreasing();
 
+        Set<CardFace> facesWeAlreadyExtracted = occurByFace.stream().map(Entry::getKey).collect(Collectors.toSet());
         for (Card card : cards) {
-            // Conversion to Set to filter the remaining cards don't have the same face of the previous groups.
-            if (!occurByFace.stream().map(Entry::getKey).collect(Collectors.toSet()).contains(card.getFace())) {
+            if (!facesWeAlreadyExtracted.contains(card.getFace())) {
                 orderedCards.add(card);
             }
         }

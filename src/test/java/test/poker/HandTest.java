@@ -224,13 +224,13 @@ public class HandTest {
         assertThat(h.compareToCardsArray(orderedCards), is(true));
     }
 
-//    @Test
-//    public void TestThreeDoublePairsAndFirstTwoAreOrderedCorrectlyAndTheThirdIgnored() {
-//        Hand h = new Hand("Td Ac Ad Td Jd Kh Jc");
-//        Card[] orderedCards = {new Card("Ac"), new Card("Ad"), new Card("Jc"), new Card("Js"), new Card("Kh"), new Card("6c"), new Card("4s")};
-//
-//        assertThat(h.compareToCardsArray(orderedCards), is(true));
-//    }
+    @Test
+    public void TestThreeDoublePairsAndFirstTwoAreOrderedCorrectlyAndTheThirdIgnored() {
+        Hand h = new Hand("Td Ac Ad Th Jd Kh Jc");
+        Card[] orderedCards = {new Card("Ac"), new Card("Ad"), new Card("Jc"), new Card("Js"), new Card("Kh"), new Card("6c"), new Card("4s")};
+
+        assertThat(h.compareToCardsArray(orderedCards), is(true));
+    }
 
 
     @Test
