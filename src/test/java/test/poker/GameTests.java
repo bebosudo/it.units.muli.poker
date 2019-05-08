@@ -32,9 +32,8 @@ public class GameTests {
         });
 
         Rank[] expRanks = {Rank.FLUSH, Rank.STRAIGHT, Rank.FOUR_OF_A_KIND};
-        ArrayList<Rank> ranks = g.getRanks();
         for (int i = 0; i < expRanks.length; i++) {
-            assertThat(ranks.get(i), is(equalTo(expRanks[i])));
+            assertThat(g.getRank(i), is(equalTo(expRanks[i])));
         }
     }
 
@@ -47,9 +46,8 @@ public class GameTests {
         });
 
         Rank[] expRanks = {Rank.FLUSH, Rank.STRAIGHT, Rank.FOUR_OF_A_KIND};
-        ArrayList<Rank> ranks = g.getRanks();
         for (int i = 0; i < expRanks.length; i++) {
-            assertThat(ranks.get(i), is(equalTo(expRanks[i])));
+            assertThat(g.getRank(i), is(equalTo(expRanks[i])));
         }
     }
 
@@ -67,9 +65,8 @@ public class GameTests {
 
 
         Rank[] expRanks = {Rank.STRAIGHT, Rank.THREE_OF_A_KIND, Rank.STRAIGHT, Rank.HIGH_CARD, Rank.PAIR, Rank.STRAIGHT};
-        ArrayList<Rank> ranks = g.getRanks();
         for (int i = 0; i < expRanks.length; i++) {
-            assertThat(ranks.get(i), is(equalTo(expRanks[i])));
+            assertThat(g.getRank(i), is(equalTo(expRanks[i])));
         }
     }
 
@@ -82,9 +79,8 @@ public class GameTests {
         Game g = new Game(filename);
 
         Rank[] expRanks = {Rank.PAIR, Rank.PAIR, Rank.PAIR, Rank.FOLD, Rank.FOLD, Rank.FLUSH};
-        ArrayList<Rank> ranks = g.getRanks();
         for (int i = 0; i < expRanks.length; i++) {
-            assertThat(ranks.get(i), is(equalTo(expRanks[i])));
+            assertThat(g.getRank(i), is(equalTo(expRanks[i])));
         }
     }
 

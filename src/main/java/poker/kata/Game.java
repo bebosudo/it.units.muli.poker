@@ -39,8 +39,8 @@ public class Game {
         return handStr;
     }
 
-    public ArrayList<Rank> getRanks() {
-        return ranks;
+    public Rank getRank(int i) {
+        return ranks.get(i);
     }
 
     private Stream<Integer> sortIndicesByComparingHands(int[] indicesToCompare) {
