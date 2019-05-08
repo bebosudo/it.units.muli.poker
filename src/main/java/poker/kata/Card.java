@@ -112,26 +112,10 @@ public class Card {
                 '}';
     }
 
-    public static Comparator<Card> COMPARE_BY_FACE = new Comparator<Card>() {
-        @Override
-        public int compare(Card o1, Card o2) {
-            return o1.face.compareTo(o2.face);
-        }
-    };
-
     public static Comparator<Card> COMPARE_BY_FACE_DECR = new Comparator<Card>() {
         @Override
         public int compare(Card o1, Card o2) {
             return o2.face.compareTo(o1.face);
         }
     };
-
-    public static Comparator<Card> COMPARE_BY_SUIT = new Comparator<Card>() {
-        @Override
-        public int compare(Card o1, Card o2) {
-            return o1.suit.compareTo(o2.suit);
-        }
-    };
-
-
 }

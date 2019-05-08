@@ -56,7 +56,7 @@ public class Hand {
         return score;
     }
 
-    public String printScore() {
+    public String scoreString() {
         switch (score) {
             case FOLD:
                 return "";
@@ -79,7 +79,7 @@ public class Hand {
             case STRAIGHT_FLUSH:
                 return "Straight Flush";
             default:
-                return "";
+                throw new IllegalArgumentException("Unknown score requested: '" + score.toString() + "'");
         }
     }
 
@@ -343,17 +343,15 @@ public class Hand {
                 cards.stream()
                         .collect(Collectors.groupingBy(Card::getSuit, Collectors.counting()));
 
-        boolean found = false;
-        CardSuit suitFound = null; //just initialize
+        CardSuit suitFound = null;
 
         for (Map.Entry<CardSuit, Long> entry: numberBySuit.entrySet()){
             if (entry.getValue() >= VALID_HAND_SIZE) {
-                found = true;
                 suitFound = entry.getKey();
             }
         }
 
-        if (! found) { return false; }
+        if (suitFound == null) { return false; }
 
         CardSuit finalSuitFound = suitFound;
 

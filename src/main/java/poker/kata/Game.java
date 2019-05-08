@@ -20,6 +20,7 @@ public class Game {
     }
 
     public Game(URL filename) {
+        // Call the first Game ctor with the lines extracted from `filename'
         this(readFileFromFilename(filename.getFile()));
     }
 
@@ -41,8 +42,8 @@ public class Game {
         return handStr;
     }
 
-    public ArrayList<Rank> getRanks() {
-        return ranks;
+    public Rank getRank(int i) {
+        return ranks.get(i);
     }
 
     private Stream<Integer> sortIndicesByComparingHands(ArrayList<Integer> indicesToCompare) {
@@ -81,7 +82,7 @@ public class Game {
     }
 
     public void print() {
-        ArrayList<String> players = hands.stream().map(x -> x.getOriginal().replace('\n', ' ') + x.printScore()).collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<String> players = hands.stream().map(x -> x.getOriginal().replace('\n', ' ') + x.scoreString()).collect(Collectors.toCollection(ArrayList::new));
 
 
         for (int win : winners) {
