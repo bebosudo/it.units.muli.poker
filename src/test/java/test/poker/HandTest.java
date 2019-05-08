@@ -464,6 +464,11 @@ public class HandTest {
         new Hand("Kc 9s Ks Kd 9d 3c 6d 6c");
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testEmptyHand(){
+        new Hand("");
+    }
+
 
 
 

@@ -13,6 +13,7 @@ public class Hand {
     private Rank score;
 
     public static final int MAX_HAND_SIZE = 7;
+    public static final int MIN_HAND_SIZE = 2;
     public static final int VALID_HAND_SIZE = 5;
     public static final int FIND_PAIR = 2;
     public static final int FIND_SET = 3;
@@ -31,8 +32,9 @@ public class Hand {
         while (mat.find()) {
             cards.add(new Card(mat.group()));
         }
-
-        if (cards.size() < MAX_HAND_SIZE) {
+        if (cards.size() < MIN_HAND_SIZE){
+            throw new IllegalArgumentException("Hand has too few cards. Need at least 2 for a fold");
+        }else if (cards.size() < MAX_HAND_SIZE) {
             score = Rank.FOLD;
             return;
         }else if(cards.size() > MAX_HAND_SIZE){
