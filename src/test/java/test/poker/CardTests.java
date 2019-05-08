@@ -53,12 +53,32 @@ public class CardTests {
         assertThat(c.getSuit(), is(equalTo(CardSuit.DIAMONDS)));
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void parseIllegalFaceCharPassed() {
+        new Card("WD");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void parseIllegalFaceCharPassedUpper() {
+        new Card("xD");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void parseIllegalSuitCharPassed() {
+        new Card("Qj");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void parseIllegalSuitCharPassedUpper() {
+        new Card("QJ");
+    }
+
     @Test
     public void parseAllAvailableCards() {
         String[] suitsStr = {"s", "c", "h", "d"};
         CardSuit[] suitsClass = {CardSuit.SPADES, CardSuit.CLUBS, CardSuit.HEARTS, CardSuit.DIAMONDS};
 
-        String[] ranksStr = {"a", "2", "3", "4", "5", "6", "7", "8", "9", "t", "j", "q"};
+        String[] ranksStr = {"a", "2", "3", "4", "5", "6", "7", "8", "9", "t", "j", "q", "k"};
         CardFace[] ranksClass = {CardFace.ACE, CardFace.TWO, CardFace.THREE, CardFace.FOUR,
                 CardFace.FIVE, CardFace.SIX, CardFace.SEVEN, CardFace.EIGHT, CardFace.NINE,
                 CardFace.TEN, CardFace.JACK, CardFace.QUEEN, CardFace.KING};
