@@ -51,7 +51,6 @@ public class Hand {
         return original;
     }
 
-    //public ArrayList<Card> getCards() { return cards; }
 
     public Rank getScore() {
         return score;
