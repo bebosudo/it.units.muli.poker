@@ -56,7 +56,7 @@ public class Hand {
         return score;
     }
 
-    public String printScore() {
+    public String scoreString() {
         switch (score) {
             case FOLD:
                 return "";
@@ -79,7 +79,7 @@ public class Hand {
             case STRAIGHT_FLUSH:
                 return "Straight Flush";
             default:
-                return "";
+                throw new IllegalArgumentException("Unknown score requested: '" + score.toString() + "'");
         }
     }
 
