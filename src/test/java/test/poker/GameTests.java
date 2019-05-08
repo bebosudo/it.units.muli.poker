@@ -95,7 +95,7 @@ public class GameTests {
                 "3h 3d 6c 7c 3c Kh 3s\n"
         });
 
-        assertThat(g.getWinners()[0], is(equalTo(1)));
+        assertThat(g.getWinner(0), is(equalTo(1)));
 
     }
 
@@ -107,7 +107,7 @@ public class GameTests {
                 "3h 3d 6c 7c 3c Kh 3s\n"
         });
 
-        assertThat(g.getWinners()[0], is(equalTo(2)));
+        assertThat(g.getWinner(0), is(equalTo(2)));
 
     }
 
@@ -119,7 +119,7 @@ public class GameTests {
                 "As 5c 6c 7c 3c Kh 3s\n"
         });
 
-        assertThat(g.getWinners()[0], is(equalTo(1)));
+        assertThat(g.getWinner(0), is(equalTo(1)));
     }
 
     @Test
@@ -130,7 +130,7 @@ public class GameTests {
                 "As 5c 6c 7c 3c Kh 3s\n"
         });
 
-        assertThat(g.getWinners()[0], is(equalTo(1)));
+        assertThat(g.getWinner(0), is(equalTo(1)));
     }
 
     @Test
@@ -142,9 +142,8 @@ public class GameTests {
         });
 
         Set<Integer> expWinners = Stream.of(0, 2).collect(Collectors.toSet());
-        int[] winners = g.getWinners();
-        for (int i = 0; i < winners.length; i++) {
-            assertThat(expWinners.contains(winners[i]), is(true));
+        for (int i = 0; i < g.getWinnersSize(); i++) {
+            assertThat(expWinners.contains(g.getWinner(i)), is(true));
         }
     }
 
@@ -160,8 +159,8 @@ public class GameTests {
         });
 
         Set<Integer> expWinners = Stream.of(0, 2).collect(Collectors.toSet());
-        for (int winner : g.getWinners()) {
-            assertThat(expWinners.contains(winner), is(true));
+        for (int i = 0; i < g.getWinnersSize(); i++) {
+            assertThat(expWinners.contains(g.getWinner(i)), is(true));
         }
     }
 

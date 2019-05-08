@@ -10,11 +10,13 @@ public class Game {
 
     private ArrayList<Hand> hands;
     private ArrayList<Rank> ranks;
-    // private boolean[] winners;
+    private ArrayList<Integer> winners;
 
     public Game(ArrayList<String> handsStr) {
         hands = handsStr.stream().map(Hand::new).collect(Collectors.toCollection(ArrayList::new));
         ranks = hands.stream().map(Hand::getScore).collect(Collectors.toCollection(ArrayList::new));
+
+        setWinners();
     }
 
     public Game(URL filename) {
@@ -43,34 +45,44 @@ public class Game {
         return ranks;
     }
 
-    private Stream<Integer> sortIndicesByComparingHands(int[] indicesToCompare) {
-        return Arrays.stream(indicesToCompare)
-                .boxed()
+    private Stream<Integer> sortIndicesByComparingHands(ArrayList<Integer> indicesToCompare) {
+        return indicesToCompare
+                .stream()
                 .sorted((index1, index2) -> -hands.get(index1).compareTo(hands.get(index2)));
     }
 
-    public int[] getWinners() {
+    private void setWinners() {
         Rank maxScore = ranks.stream().max(Comparator.comparing(Rank::getValue)).get();
 
-        int[] bestHandsIndices = IntStream.range(0, ranks.size())
+        ArrayList<Integer> bestHandsIndices = IntStream.range(0, ranks.size())
                 .filter(i -> ranks.get(i).equals(maxScore))
-                .toArray();
+                .boxed()
+                .collect(Collectors.toCollection(ArrayList::new));
+
 
         //There's one single winner (or none)
-        if (bestHandsIndices.length < 2) {
-            return bestHandsIndices;
-        }
+        if (bestHandsIndices.size() < 2) {
+            winners = bestHandsIndices;
 
-        return sortIndicesByComparingHands(bestHandsIndices)
-                .mapToInt(Integer::intValue)
-                .toArray();
+        //More than one winner
+        }else {
+            winners = sortIndicesByComparingHands(bestHandsIndices)
+                    .collect(Collectors.toCollection(ArrayList::new));
+        }
     }
 
+
+    public int getWinnersSize(){
+        return winners.size();
+    }
+
+    public int getWinner(int index){
+        return winners.get(index);
+    }
 
     public void print() {
         ArrayList<String> players = hands.stream().map(x -> x.getOriginal().replace('\n', ' ') + x.printScore()).collect(Collectors.toCollection(ArrayList::new));
 
-        int[] winners = getWinners();
 
         for (int win : winners) {
             players.set(win, players.get(win).replaceAll("$", " (winner)"));
