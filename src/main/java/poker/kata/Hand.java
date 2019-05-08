@@ -32,9 +32,11 @@ public class Hand {
             cards.add(new Card(mat.group()));
         }
 
-        if (cards.size() != MAX_HAND_SIZE) {
+        if (cards.size() < MAX_HAND_SIZE) {
             score = Rank.FOLD;
             return;
+        }else if(cards.size() > MAX_HAND_SIZE){
+            throw new IllegalArgumentException("Hand has got too many cards");
         }
 
         setScore();
