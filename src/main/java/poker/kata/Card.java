@@ -11,7 +11,6 @@ public class Card {
         char faceChar = card.charAt(0);
         char suitChar = card.charAt(1);
 
-        // TODO: add exceptions in defaults?
         switch (faceChar) {
             case 'A':
             case 'a':
@@ -57,6 +56,8 @@ public class Card {
             case 'k':
                 face = CardFace.KING;
                 break;
+            default:
+                throw new IllegalArgumentException("Unknown face char passed: '" + faceChar + "'");
         }
 
         switch (suitChar) {
@@ -76,6 +77,8 @@ public class Card {
             case 'd':
                 suit = CardSuit.DIAMONDS;
                 break;
+            default:
+                throw new IllegalArgumentException("Unknown suit char passed: '" + suitChar + "'");
         }
     }
 
