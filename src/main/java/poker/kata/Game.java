@@ -18,6 +18,7 @@ public class Game {
     }
 
     public Game(URL filename) {
+        // Call the first Game ctor with the lines extracted from `filename'
         this(readFileFromFilename(filename.getFile()));
     }
 
