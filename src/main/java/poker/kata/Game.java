@@ -56,7 +56,8 @@ public class Game {
                 .filter(i -> ranks.get(i).equals(maxScore))
                 .toArray();
 
-        if (bestHandsIndices.length == 0 || bestHandsIndices.length == 1) {
+        //There's one single winner (or none)
+        if (bestHandsIndices.length < 2) {
             return bestHandsIndices;
         }
 
