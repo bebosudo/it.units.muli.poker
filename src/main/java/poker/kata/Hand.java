@@ -164,13 +164,9 @@ public class Hand {
     }
 
 
-    public void sortByRankDecreasing() {
+    public void sortByFaceDecreasing() {
         cards.sort(Card.COMPARE_BY_FACE_DECR);
     }
-
-    /*private void sortBySuit() {
-        cards.sort(Card.COMPARE_BY_SUIT);
-    }*/
 
     public boolean compareToCardsArray(Card[] other) {
         if (other.length != size()) {
@@ -205,9 +201,8 @@ public class Hand {
         }
     }
 
-
     private boolean orderAndFindGroupsIntoCards(int... groupsLength){
-        this.sortByRankDecreasing();
+        this.sortByFaceDecreasing();
         ArrayList<Card> cardsBackup = new ArrayList<>(cards);
         ArrayList<Card> orderedCards = new ArrayList<>();
 
