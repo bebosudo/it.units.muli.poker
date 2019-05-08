@@ -305,6 +305,8 @@ public class Hand {
         return orderByStraight(cards.size());
     }
 
+
+    // we need to search up to a number when we are looking for a straight flush
     private boolean orderByStraight(int straightUpToNumber) {
         ArrayList<Card> partialCards = getDistinctCardsByFace(straightUpToNumber);
 
