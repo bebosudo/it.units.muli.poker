@@ -82,7 +82,8 @@ public class Game {
     }
 
     public void print() {
-        ArrayList<String> players = hands.stream().map(x -> x.getOriginal().replace('\n', ' ') + x.scoreString()).collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<String> players = hands.stream().map(x -> x.getOriginal() + " " +
+                x.scoreString()).collect(Collectors.toCollection(ArrayList::new));
 
 
         for (int win : winners) {
