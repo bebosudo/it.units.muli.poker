@@ -459,6 +459,10 @@ public class HandTest {
         assertThat(h.printScore(),is(equalTo("Full House")));
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testHandSizeTooLarge(){
+        new Hand("Kc 9s Ks Kd 9d 3c 6d 6c");
+    }
 
 
 
