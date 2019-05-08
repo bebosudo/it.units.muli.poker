@@ -344,17 +344,15 @@ public class Hand {
                 cards.stream()
                         .collect(Collectors.groupingBy(Card::getSuit, Collectors.counting()));
 
-        boolean found = false;
-        CardSuit suitFound = null; //just initialize
+        CardSuit suitFound = null;
 
         for (Map.Entry<CardSuit, Long> entry: numberBySuit.entrySet()){
             if (entry.getValue() >= VALID_HAND_SIZE) {
-                found = true;
                 suitFound = entry.getKey();
             }
         }
 
-        if (! found) { return false; }
+        if (suitFound == null) { return false; }
 
         CardSuit finalSuitFound = suitFound;
 
