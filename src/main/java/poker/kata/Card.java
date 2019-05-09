@@ -7,79 +7,66 @@ public class Card {
     private CardFace face;
     private CardSuit suit;
 
+    private CardFace parseFaceCharacter(char faceChar) {
+        switch (java.lang.Character.toUpperCase(faceChar)) {
+            case 'A':
+                return CardFace.ACE;
+            case '2':
+                return CardFace.TWO;
+            case '3':
+                return CardFace.THREE;
+            case '4':
+                return CardFace.FOUR;
+            case '5':
+                return CardFace.FIVE;
+            case '6':
+                return CardFace.SIX;
+            case '7':
+                return CardFace.SEVEN;
+            case '8':
+                return CardFace.EIGHT;
+            case '9':
+                return CardFace.NINE;
+            case 'T':
+                return CardFace.TEN;
+            case 'J':
+                return CardFace.JACK;
+            case 'Q':
+                return CardFace.QUEEN;
+            case 'K':
+                return CardFace.KING;
+            default:
+                throw new IllegalArgumentException("Unknown face char passed: '" + faceChar + "'");
+        }
+    }
+
+    private CardSuit parseSuitCharacter(char suitChar) {
+        switch (java.lang.Character.toUpperCase(suitChar)) {
+            case 'S':
+                return CardSuit.SPADES;
+
+            case 'C':
+                return CardSuit.CLUBS;
+
+            case 'H':
+                return CardSuit.HEARTS;
+
+            case 'D':
+                return CardSuit.DIAMONDS;
+
+            default:
+                throw new IllegalArgumentException("Unknown suit char passed: '" + suitChar + "'");
+
+        }
+    }
+
     public Card(String card) {
         char faceChar = card.charAt(0);
         char suitChar = card.charAt(1);
 
-        switch (faceChar) {
-            case 'A':
-            case 'a':
-                face = CardFace.ACE;
-                break;
-            case '2':
-                face = CardFace.TWO;
-                break;
-            case '3':
-                face = CardFace.THREE;
-                break;
-            case '4':
-                face = CardFace.FOUR;
-                break;
-            case '5':
-                face = CardFace.FIVE;
-                break;
-            case '6':
-                face = CardFace.SIX;
-                break;
-            case '7':
-                face = CardFace.SEVEN;
-                break;
-            case '8':
-                face = CardFace.EIGHT;
-                break;
-            case '9':
-                face = CardFace.NINE;
-                break;
-            case 'T':
-            case 't':
-                face = CardFace.TEN;
-                break;
-            case 'J':
-            case 'j':
-                face = CardFace.JACK;
-                break;
-            case 'Q':
-            case 'q':
-                face = CardFace.QUEEN;
-                break;
-            case 'K':
-            case 'k':
-                face = CardFace.KING;
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown face char passed: '" + faceChar + "'");
-        }
+        face = parseFaceCharacter(faceChar);
+        suit = parseSuitCharacter(suitChar);
 
-        switch (suitChar) {
-            case 'S':
-            case 's':
-                suit = CardSuit.SPADES;
-                break;
-            case 'C':
-            case 'c':
-                suit = CardSuit.CLUBS;
-                break;
-            case 'H':
-            case 'h':
-                suit = CardSuit.HEARTS;
-                break;
-            case 'D':
-            case 'd':
-                suit = CardSuit.DIAMONDS;
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown suit char passed: '" + suitChar + "'");
-        }
     }
 
     public CardFace getFace() {
