@@ -269,7 +269,7 @@ public class Hand {
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
-        private int getIndexOfStraight(ArrayList<Card> searchArray) {
+    private int getIndexOfStraight(ArrayList<Card> searchArray) {
         // We need to check that the difference between 5 ORDERED and DISTINCT cards is exactly 5-1 to make a Straight,
         // or that there are card faces from 5 to Ace. 
         for (int i = 0; i < searchArray.size() - (VALID_HAND_SIZE - 1); i++) {
