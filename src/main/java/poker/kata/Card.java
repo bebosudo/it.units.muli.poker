@@ -72,6 +72,7 @@ public class Card {
     public CardFace getFace() {
         return face;
     }
+    public boolean isAce() { return face == CardFace.ACE; }
 
     public CardSuit getSuit() {
         return suit;
@@ -99,10 +100,5 @@ public class Card {
                 '}';
     }
 
-    public static Comparator<Card> COMPARE_BY_FACE_DECR = new Comparator<Card>() {
-        @Override
-        public int compare(Card o1, Card o2) {
-            return o2.face.compareTo(o1.face);
-        }
-    };
+    public static Comparator<Card> COMPARE_BY_FACE_DECR = (o1, o2) -> o2.face.compareTo(o1.face);
 }

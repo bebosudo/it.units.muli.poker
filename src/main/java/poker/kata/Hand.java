@@ -32,25 +32,25 @@ public class Hand {
         while (mat.find()) {
             cards.add(new Card(mat.group()));
         }
-        if (cards.size() < MIN_HAND_SIZE){
+        if (cards.size() < MIN_HAND_SIZE) {
             throw new IllegalArgumentException("Hand has too few cards. Need at least 2 for a fold");
-        }else if (cards.size() < MAX_HAND_SIZE) {
+        } else if (cards.size() < MAX_HAND_SIZE) {
             score = Rank.FOLD;
             return;
-        }else if(cards.size() > MAX_HAND_SIZE){
+        } else if (cards.size() > MAX_HAND_SIZE) {
             throw new IllegalArgumentException("Hand has got too many cards");
         }
 
         setScore();
     }
 
-    private Card getCard(int i) {
+    public Card getCard(int i) {
         return cards.get(i);
     }
+
     String getOriginal() {
         return original;
     }
-
 
     public Rank getScore() {
         return score;
@@ -168,7 +168,17 @@ public class Hand {
         cards.sort(Card.COMPARE_BY_FACE_DECR);
     }
 
-    public boolean compareToCardsArray( ArrayList<Card> other){
+    public void sortByFaceDecreasingAce1() {
+        sortByFaceDecreasing();
+
+        ArrayList<Card> acesFound = cards.stream().filter(Card::isAce)
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        cards.removeIf(Card::isAce);
+        cards.addAll(acesFound);
+    }
+
+    public boolean compareToCardsArray(ArrayList<Card> other) {
         if (other.size() != size()) {
             return false;
         } else {
@@ -177,6 +187,7 @@ public class Hand {
                     .compareTo(getCard(i).getFace())).limit(VALID_HAND_SIZE).allMatch(x -> x == 0);
         }
     }
+
     private boolean searchForGroupOfCardsInArrayThenPopGroup(ArrayList<Card> arrayFrom, ArrayList<Card> arrayTo, int groupLength) {
         //search into arrayFrom if it can find a given group of cards, then it pops the group from arrayFrom
         //and pushes it into arrayTo
@@ -189,7 +200,7 @@ public class Hand {
         return false;
     }
 
-    private void popCards(ArrayList<Card> arrayFrom, ArrayList<Card> arrayTo){
+    private void popCards(ArrayList<Card> arrayFrom, ArrayList<Card> arrayTo) {
         popCards(arrayFrom, arrayTo, 0, arrayFrom.size());
     }
 
@@ -201,21 +212,21 @@ public class Hand {
         }
     }
 
-    private boolean orderAndFindGroupsIntoCards(int... groupsLength){
+    private boolean orderAndFindGroupsIntoCards(int... groupsLength) {
         this.sortByFaceDecreasing();
         ArrayList<Card> cardsBackup = new ArrayList<>(cards);
         ArrayList<Card> orderedCards = new ArrayList<>();
 
         //order groupsLength in decreasing order
         groupsLength = Arrays.stream(groupsLength).boxed()
-                                                  .sorted(Comparator.reverseOrder())
-                                                  .mapToInt(Integer::intValue)
-                                                  .toArray();
+                .sorted(Comparator.reverseOrder())
+                .mapToInt(Integer::intValue)
+                .toArray();
 
 
-        for(int groupLength : groupsLength){
+        for (int groupLength : groupsLength) {
             boolean found = searchForGroupOfCardsInArrayThenPopGroup(cards, orderedCards, groupLength);
-            if(!found){
+            if (!found) {
                 //if not found, revert to backup
                 cards = cardsBackup;
                 return false;
@@ -244,7 +255,7 @@ public class Hand {
         return orderAndFindGroupsIntoCards(FIND_SET);
     }
 
-    private ArrayList<Card> getDistinctCardsByFace(int limitSearchTo){
+    private ArrayList<Card> getDistinctCardsByFace(int limitSearchTo) {
         return cards.stream()
                 .limit(limitSearchTo)
                 .sorted(Card.COMPARE_BY_FACE_DECR)
@@ -252,7 +263,7 @@ public class Hand {
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    private int getIndexOfNormalStraightInFaceArray(ArrayList<Card> searchArray){
+    private int getIndexOfNormalStraightInFaceArray(ArrayList<Card> searchArray) {
         for (int i = 0; i < searchArray.size() - (VALID_HAND_SIZE - 1); i++) {
             if (searchArray.get(i).getFace().getValue() - searchArray.get(i + VALID_HAND_SIZE - 1).getFace().getValue() == (VALID_HAND_SIZE - 1)) {
                 return i;
@@ -261,7 +272,7 @@ public class Hand {
         return -1;
     }
 
-    private int getIndexOfAceToFiveStraightInFaceArray(ArrayList<Card> searchArray){
+    private int getIndexOfAceToFiveStraightInFaceArray(ArrayList<Card> searchArray) {
         if (searchArray.get(0).getFace() == CardFace.ACE &&
                 searchArray.get(searchArray.size() - 1).getFace() == CardFace.TWO &&
                 searchArray.get(searchArray.size() - 4).getFace() == CardFace.FIVE) {
@@ -270,7 +281,7 @@ public class Hand {
         return -1;
     }
 
-    private void overwriteCardsForNormalStraight(ArrayList<Card> searchArray, int firstCardOfStraight){
+    private void overwriteCardsForNormalStraight(ArrayList<Card> searchArray, int firstCardOfStraight) {
         //first remove straight and place it on top of the cards array
         for (int fillCardsArrayId = 0; fillCardsArrayId < VALID_HAND_SIZE; fillCardsArrayId++) {
             // The card to pop in the temp array will be always the same, because at the
@@ -284,7 +295,7 @@ public class Hand {
         }
     }
 
-    private void overwriteCardsForAceToFiveStraight(ArrayList<Card> searchArray){
+    private void overwriteCardsForAceToFiveStraight(ArrayList<Card> searchArray) {
         //first set the cards from 5 to 2 on top of the cards array
         for (int lastCardsId = 0; lastCardsId < VALID_HAND_SIZE - 1; lastCardsId++) {
             cards.set(3 - lastCardsId, searchArray.remove(searchArray.size() - 1));
@@ -315,7 +326,7 @@ public class Hand {
 
         int indexOfStraight = getIndexOfNormalStraightInFaceArray(partialCards);
 
-        if(indexOfStraight >= 0){
+        if (indexOfStraight >= 0) {
             overwriteCardsForNormalStraight(partialCards, indexOfStraight);
             return true;
         }
@@ -323,7 +334,7 @@ public class Hand {
         //check if there's a straight with 'A .. 5 4 3 2'.
         indexOfStraight = getIndexOfAceToFiveStraightInFaceArray(partialCards);
 
-        if(indexOfStraight >= 0){
+        if (indexOfStraight >= 0) {
             overwriteCardsForAceToFiveStraight(partialCards);
             return true;
         }
@@ -340,13 +351,15 @@ public class Hand {
 
         CardSuit suitFound = null;
 
-        for (Map.Entry<CardSuit, Long> entry: numberBySuit.entrySet()){
+        for (Map.Entry<CardSuit, Long> entry : numberBySuit.entrySet()) {
             if (entry.getValue() >= VALID_HAND_SIZE) {
                 suitFound = entry.getKey();
             }
         }
 
-        if (suitFound == null) { return false; }
+        if (suitFound == null) {
+            return false;
+        }
 
         CardSuit finalSuitFound = suitFound;
 
@@ -357,7 +370,7 @@ public class Hand {
                 .collect(Collectors.toCollection(ArrayList::new));
 
         //push the leftovers at the end of the array
-        for (Card card: cards) {
+        for (Card card : cards) {
             if (card.getSuit() != suitFound) {
                 orderedCards.add(card);
             }

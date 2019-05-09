@@ -469,6 +469,16 @@ public class HandTest {
         assertThat(h.scoreString(), is(equalTo("Full House")));
     }
 
+    @Test
+    public void sortByFaceDecrWithAceEqual1() {
+        Hand h = new Hand("Ac 9s As Kd Ad 3c 6d");
+        h.sortByFaceDecreasingAce1();
+        assertThat(h.getCard(0), is(equalTo(new Card("Kd"))));
+        assertThat(h.getCard(4), is(equalTo(new Card("Ac"))));
+        assertThat(h.getCard(5), is(equalTo(new Card("As"))));
+        assertThat(h.getCard(6), is(equalTo(new Card("Ad"))));
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void testHandSizeTooLarge() {
         new Hand("Kc 9s Ks Kd 9d 3c 6d 6c");
