@@ -1,60 +1,94 @@
 @startuml
 
 class Card {
-- CardRank rank
+- CardFace face
 - CardSuit suit
-+ CardRank getRank()
++ CardFace getFace()
 + CardSuit getSuit()
++ Boolean equals(Object o)
++ int hashCode()
++ String toString()
++ Comparator<Card> COMPARE_BY_FACE_DECR
 }
 
 class Hand {
-- String original
+- String original;
 - ArrayList<Card> cards;
-- CardHands score;
+- Rank score;
 
-+ Card getCards(int i)
-+ String getOriginal()
+- static final int MAX_HAND_SIZE = 7;
+- static final int MIN_HAND_SIZE = 2;
+- static final int VALID_HAND_SIZE = 5;
+- static final int FIND_PAIR = 2;
+- static final int FIND_SET = 3;
+- static final int FIND_QUAD = 4;
+- static final int FACE_DIFF_FOR_STRAIGHT_5_TO_ACE = CardFace.FIVE.getValue() - CardFace.ACE.getValue();
+- static final int FACE_DIFF_FOR_STRAIGHT = VALID_HAND_SIZE - 1;
 
-+ CardHands getScore()
-+ int compare(Hand h)
-+ void setScore()
-- void sortByRank()
-- void sortBySuit()
-- boolean isPair()
-- boolean isDouble()
-- boolean isSet()
-- boolean isStraight()
-- boolean isFlush()
-- boolean isFull()
-- boolean isQuad()
-- int compareHigh(Hand h)
-- int comparePair(Hand h)
-- int compareDouble(Hand h)
-- int compareSet(Hand h)
-- int compareStraight(Hand h)
-- int compareFlush(Hand h)
-- int compareFull(Hand h)
-- int compareQuad(Hand h)
-- int compareStraightFlush(Hand h)
-+ void printCards()
-
-}
-
-class Player {
+- Card getCard(int i);
++ String getOriginal();
++ Rank getScore();
++ String scoreString();
++ int size();
++ int compareTo(Hand h);
++ boolean equals(Object o);
++ int hashCode();
++ String toString();
++ void setScore();
++ void sortByFaceDecreasing();
+- void sortByFaceDecreasing(ArrayList<Card> toBeOrdered);
++ void sortByFaceDecreasingAce1();
+- void sortByFaceDecreasingAce1(ArrayList<Card> toBeOrdered);
++ boolean compareToCardsArray(Card[] other);
+- boolean searchForGroupOfCardsInArrayThenPopGroup(ArrayList<Card> arrayFrom, ArrayList<Card> arrayTo, int groupLength);
+- void popCards(ArrayList<Card> arrayFrom, ArrayList<Card> arrayTo);
+- void popCards(ArrayList<Card> arrayFrom, ArrayList<Card> arrayTo, int minIndex, int maxIndex);
+- boolean orderAndFindGroupsIntoCards(int... groupsLength);
+- boolean orderByPair();
+- boolean orderByDouble();
+- boolean orderBySet();
+- ArrayList<Card> getDistinctCardsByFace(int limitSearchTo);
+- int getIndexOfStraight(ArrayList<Card> searchArray);
+- void overwriteCardsForNormalStraight(ArrayList<Card> searchArray, int firstCardOfStraight);
+- boolean orderByStraight();
+- boolean checkIsStraight(ArrayList<Card> toBeChecked);
+- boolean orderByStraight(int straightUpToNumber);
+- boolean orderByFlush();
+- boolean orderByFull();
+- boolean orderByQuad();
+- boolean orderByStraightFlush();
 
 }
 
 class Game {
+- ArrayList<Hand> hands;
+- ArrayList<Rank> ranks;
+- ArrayList<Integer> winners;
 
+- Stream<Integer> sortIndicesByComparingHands(ArrayList<Integer> indicesToCompare);
+- void setWinners();
++ Rank getRank(int i);
++ int getWinnersSize();
++ int getWinner(int index);
++ void print();
 }
 
-Hand <|-- Player
-Card <|-- Hand
-CardSuit <|-- Card
-CardRank <|-- Card
-CardHands <|-- Hand
+class Main{
++ static void main(String[] args);
+}
 
-Player <|-- Game
+class Utils{
++ static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor)
+}
+
+CardSuit <|-- Card
+CardFace <|-- Card
+Card <|-- Hand
+Hand <|-- Game
+Game <|-- Main
+Utils <|-- Hand
+
+
 
 enum CardSuit {
 CLUBS = 1
@@ -63,7 +97,7 @@ HEARTS = 3
 DIAMONDS = 4
 }
 
-enum CardRank {
+enum CardFace {
 TWO = 2
 THREE = 3
 FOUR = 4
@@ -81,7 +115,8 @@ ACE = 14
 + int getValue()
 }
 
-enum CardHands {
+enum Rank {
+FOLD = 0
 HIGH_CARD = 1
 PAIR = 2
 TWO PAIRS = 3
@@ -92,6 +127,7 @@ FULL_HOUSE = 7
 FOUR_OF_A_KIND = 8
 STRAIGHT_FLUSH = 9
 - int value
++ int getValue()
 }
 
 @enduml
