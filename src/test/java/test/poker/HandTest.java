@@ -7,6 +7,9 @@ import poker.kata.Hand;
 import poker.kata.Card;
 
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import static org.hamcrest.CoreMatchers.*;
 
 import static org.junit.Assert.assertThat;
@@ -205,56 +208,63 @@ public class HandTest {
     public void TestStraightOrdering() {
         Hand h = new Hand("9c 6c 7c 4s Kh 3s 5d");
         Card[] orderedCards = {new Card("7c"), new Card("6c"), new Card("5d"), new Card("4s"), new Card("3s"), new Card("Kh"), new Card("9c")};
+        ArrayList<Card> orderedCardsList = new ArrayList(Arrays.asList(orderedCards));
 
-        assertThat(h.compareToCardsArray(orderedCards), is(true));
+        assertThat(h.compareToCardsArray(orderedCardsList), is(true));
     }
 
     @Test
     public void TestPairOrdering() {
         Hand h = new Hand("9c 6c 7c 4s Kh 3s 7d");
         Card[] orderedCards = {new Card("7c"), new Card("7d"), new Card("Kh"), new Card("9c"), new Card("6c"), new Card("4s"), new Card("3s")};
+        ArrayList<Card> orderedCardsList = new ArrayList(Arrays.asList(orderedCards));
 
-        assertThat(h.compareToCardsArray(orderedCards), is(true));
+        assertThat(h.compareToCardsArray(orderedCardsList), is(true));
     }
 
     @Test
     public void TestDoubleOrdering() {
         Hand h = new Hand("3c 6c 7c 4s Kh 3s 7d");
         Card[] orderedCards = {new Card("7c"), new Card("7d"), new Card("3c"), new Card("3s"), new Card("Kh"), new Card("6c"), new Card("4s")};
+        ArrayList<Card> orderedCardsList = new ArrayList(Arrays.asList(orderedCards));
 
-        assertThat(h.compareToCardsArray(orderedCards), is(true));
+        assertThat(h.compareToCardsArray(orderedCardsList), is(true));
     }
 
     @Test
     public void TestSetOrdering() {
         Hand h = new Hand("Qh 6c 7c Qs Kh 3s Qd");
         Card[] orderedCards = {new Card("Qh"), new Card("Qs"), new Card("Qd"), new Card("Kh"), new Card("7c"), new Card("6c"), new Card("3s")};
+        ArrayList<Card> orderedCardsList = new ArrayList(Arrays.asList(orderedCards));
 
-        assertThat(h.compareToCardsArray(orderedCards), is(true));
+        assertThat(h.compareToCardsArray(orderedCardsList), is(true));
     }
 
     @Test
     public void TestFullOrdering() {
         Hand h = new Hand("Qh Kc 7c Qs Kh 3s Qd");
         Card[] orderedCards = {new Card("Qh"), new Card("Qs"), new Card("Qd"), new Card("Kh"), new Card("Kc"), new Card("7c"), new Card("3s")};
+        ArrayList<Card> orderedCardsList = new ArrayList(Arrays.asList(orderedCards));
 
-        assertThat(h.compareToCardsArray(orderedCards), is(true));
+        assertThat(h.compareToCardsArray(orderedCardsList), is(true));
     }
 
     @Test
     public void TestQuadOrdering() {
         Hand h = new Hand("Qh Kc 7c Qs Kh Qc Qd");
         Card[] orderedCards = {new Card("Qh"), new Card("Qs"), new Card("Qd"), new Card("Qc"), new Card("Kc"), new Card("Kh"), new Card("7c")};
+        ArrayList<Card> orderedCardsList = new ArrayList(Arrays.asList(orderedCards));
 
-        assertThat(h.compareToCardsArray(orderedCards), is(true));
+        assertThat(h.compareToCardsArray(orderedCardsList), is(true));
     }
 
     @Test
     public void TestWrongOrderingForQuad() {
         Hand h = new Hand("Qh Kc 7c Qs Kh Qc Qd");
         Card[] orderedCards = {new Card("7c"), new Card("Qs"), new Card("Qd"), new Card("Qc"), new Card("Kc"), new Card("Kh"), new Card("Qh")};
+        ArrayList<Card> orderedCardsList = new ArrayList(Arrays.asList(orderedCards));
 
-        assertThat(h.compareToCardsArray(orderedCards), is(false));
+        assertThat(h.compareToCardsArray(orderedCardsList), is(false));
     }
 
     @Test
@@ -262,7 +272,9 @@ public class HandTest {
         // this test is to make sure only the first 5 cards are compared
         Hand h = new Hand("6h 6c 7c 4s Kh 3s 5d");
         Card[] orderedCards = {new Card("7c"), new Card("6h"), new Card("5d"), new Card("4s"), new Card("3s"), new Card("Kh"), new Card("6c")};
-        assertThat(h.compareToCardsArray(orderedCards), is(true));
+        ArrayList<Card> orderedCardsList = new ArrayList(Arrays.asList(orderedCards));
+
+        assertThat(h.compareToCardsArray(orderedCardsList), is(true));
     }
 
 

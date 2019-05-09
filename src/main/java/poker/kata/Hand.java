@@ -168,12 +168,12 @@ public class Hand {
         cards.sort(Card.COMPARE_BY_FACE_DECR);
     }
 
-    public boolean compareToCardsArray(Card[] other) {
-        if (other.length != size()) {
+    public boolean compareToCardsArray( ArrayList<Card> other){
+        if (other.size() != size()) {
             return false;
         } else {
             // limit(5) is used to compare only first 5, no need to compare more
-            return IntStream.range(0, other.length).mapToLong(i -> other[i].getFace()
+            return IntStream.range(0, other.size()).mapToLong(i -> other.get(i).getFace()
                     .compareTo(getCard(i).getFace())).limit(VALID_HAND_SIZE).allMatch(x -> x == 0);
         }
     }
