@@ -470,7 +470,17 @@ public class HandTest {
     }
 
     @Test
-    public void sortByFaceDecrWithAceEqual1() {
+    public void testSortByFaceDecr() {
+        Hand h = new Hand("Ac 9s As Kd Ad 3c 6d");
+        h.sortByFaceDecreasing();
+        assertThat(h.getCard(0), is(equalTo(new Card("Ac"))));
+        assertThat(h.getCard(1), is(equalTo(new Card("As"))));
+        assertThat(h.getCard(2), is(equalTo(new Card("Ad"))));
+        assertThat(h.getCard(3), is(equalTo(new Card("Kd"))));
+    }
+
+    @Test
+    public void testSortByFaceDecrWithAceEqual1() {
         Hand h = new Hand("Ac 9s As Kd Ad 3c 6d");
         h.sortByFaceDecreasingAce1();
         assertThat(h.getCard(0), is(equalTo(new Card("Kd"))));

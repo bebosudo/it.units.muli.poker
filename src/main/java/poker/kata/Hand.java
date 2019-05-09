@@ -1,10 +1,8 @@
 package poker.kata;
 
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.regex.*;
 import java.util.stream.*;
-
 
 public class Hand {
 
@@ -12,12 +10,15 @@ public class Hand {
     private ArrayList<Card> cards;
     private Rank score;
 
-    public static final int MAX_HAND_SIZE = 7;
-    public static final int MIN_HAND_SIZE = 2;
-    public static final int VALID_HAND_SIZE = 5;
-    public static final int FIND_PAIR = 2;
-    public static final int FIND_SET = 3;
-    public static final int FIND_QUAD = 4;
+    private static final int MAX_HAND_SIZE = 7;
+    private static final int MIN_HAND_SIZE = 2;
+    private static final int VALID_HAND_SIZE = 5;
+    private static final int FIND_PAIR = 2;
+    private static final int FIND_SET = 3;
+    private static final int FIND_QUAD = 4;
+    private static final int FACE_DIFF_FOR_STRAIGHT = VALID_HAND_SIZE - 1;
+    private static final int FACE_DIFF_FOR_STRAIGHT_5_TO_ACE = CardFace.FIVE.getValue() - CardFace.ACE.getValue();
+
 
     public Hand(String HandStr) {
 
@@ -165,17 +166,26 @@ public class Hand {
 
 
     public void sortByFaceDecreasing() {
-        cards.sort(Card.COMPARE_BY_FACE_DECR);
+        sortByFaceDecreasing(cards);
+    }
+
+    private void sortByFaceDecreasing(ArrayList<Card> toBeOrdered) {
+        toBeOrdered.sort(Card.COMPARE_BY_FACE_DECR);
     }
 
     public void sortByFaceDecreasingAce1() {
-        sortByFaceDecreasing();
+        sortByFaceDecreasingAce1(cards);
+    }
 
-        ArrayList<Card> acesFound = cards.stream().filter(Card::isAce)
+    private void sortByFaceDecreasingAce1(ArrayList<Card> toBeOrdered) {
+        sortByFaceDecreasing(toBeOrdered);
+
+        // All the Ace faces should be at the beginning of `cards'.
+        ArrayList<Card> acesFound = toBeOrdered.stream().filter(Card::isAce)
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        cards.removeIf(Card::isAce);
-        cards.addAll(acesFound);
+        toBeOrdered.removeIf(Card::isAce);
+        toBeOrdered.addAll(acesFound);
     }
 
     public boolean compareToCardsArray(ArrayList<Card> other) {
@@ -241,42 +251,32 @@ public class Hand {
     }
 
     private boolean orderByPair() {
-
         return orderAndFindGroupsIntoCards(FIND_PAIR);
     }
 
     private boolean orderByDouble() {
-
         return orderAndFindGroupsIntoCards(FIND_PAIR, FIND_PAIR);
     }
 
     private boolean orderBySet() {
-
         return orderAndFindGroupsIntoCards(FIND_SET);
     }
 
     private ArrayList<Card> getDistinctCardsByFace(int limitSearchTo) {
         return cards.stream()
                 .limit(limitSearchTo)
-                .sorted(Card.COMPARE_BY_FACE_DECR)
                 .filter(Utils.distinctByKey(Card::getFace))
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    private int getIndexOfNormalStraightInFaceArray(ArrayList<Card> searchArray) {
+        private int getIndexOfStraight(ArrayList<Card> searchArray) {
+        // We need to check that the difference between 5 ORDERED and DISTINCT cards is exactly 5-1 to make a Straight,
+        // or that there are card faces from 5 to Ace. 
         for (int i = 0; i < searchArray.size() - (VALID_HAND_SIZE - 1); i++) {
-            if (searchArray.get(i).getFace().getValue() - searchArray.get(i + VALID_HAND_SIZE - 1).getFace().getValue() == (VALID_HAND_SIZE - 1)) {
+            int rankDifference = searchArray.get(i).getFace().getValue() - searchArray.get(i + VALID_HAND_SIZE - 1).getFace().getValue();
+            if (rankDifference == FACE_DIFF_FOR_STRAIGHT || rankDifference == FACE_DIFF_FOR_STRAIGHT_5_TO_ACE) {
                 return i;
             }
-        }
-        return -1;
-    }
-
-    private int getIndexOfAceToFiveStraightInFaceArray(ArrayList<Card> searchArray) {
-        if (searchArray.get(0).getFace() == CardFace.ACE &&
-                searchArray.get(searchArray.size() - 1).getFace() == CardFace.TWO &&
-                searchArray.get(searchArray.size() - 4).getFace() == CardFace.FIVE) {
-            return 0;
         }
         return -1;
     }
@@ -295,51 +295,34 @@ public class Hand {
         }
     }
 
-    private void overwriteCardsForAceToFiveStraight(ArrayList<Card> searchArray) {
-        //first set the cards from 5 to 2 on top of the cards array
-        for (int lastCardsId = 0; lastCardsId < VALID_HAND_SIZE - 1; lastCardsId++) {
-            cards.set(3 - lastCardsId, searchArray.remove(searchArray.size() - 1));
-        }
-
-        // Pop out the Ace to the last position of the straight.
-        cards.set(VALID_HAND_SIZE - 1, searchArray.remove(0));
-
-        // Fill `cards' with the leftovers.
-        for (int leftoversCardsId = 0; leftoversCardsId < searchArray.size(); leftoversCardsId++) {
-            cards.set(leftoversCardsId + VALID_HAND_SIZE, searchArray.remove(0));
-        }
-    }
-
     private boolean orderByStraight() {
         return orderByStraight(cards.size());
     }
 
+    private boolean checkIsStraight(ArrayList<Card> toBeChecked) {
+        int indexOfStraight = getIndexOfStraight(toBeChecked);
+
+        if (indexOfStraight >= 0) {
+            overwriteCardsForNormalStraight(toBeChecked, indexOfStraight);
+            return true;
+        }
+        return false;
+    }
 
     // we need to search up to a number when we are looking for a straight flush
     private boolean orderByStraight(int straightUpToNumber) {
         ArrayList<Card> partialCards = getDistinctCardsByFace(straightUpToNumber);
+        sortByFaceDecreasing(partialCards);
 
         // There must be at least 5 unique cards to make a Straight.
         if (partialCards.size() < VALID_HAND_SIZE) {
             return false;
         }
 
-        int indexOfStraight = getIndexOfNormalStraightInFaceArray(partialCards);
+        if (checkIsStraight(partialCards)) return true;
 
-        if (indexOfStraight >= 0) {
-            overwriteCardsForNormalStraight(partialCards, indexOfStraight);
-            return true;
-        }
-
-        //check if there's a straight with 'A .. 5 4 3 2'.
-        indexOfStraight = getIndexOfAceToFiveStraightInFaceArray(partialCards);
-
-        if (indexOfStraight >= 0) {
-            overwriteCardsForAceToFiveStraight(partialCards);
-            return true;
-        }
-
-        return false;
+        sortByFaceDecreasingAce1(partialCards);
+        return checkIsStraight(partialCards);
     }
 
     // Search for 5 cards with the same suit.
